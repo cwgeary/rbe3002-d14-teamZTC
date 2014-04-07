@@ -1,0 +1,8 @@
+prefix=/home/zach/rbe3002-ws/devel
+
+Name: zdlovett_lab2
+Description: Description of zdlovett_lab2
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/zach/rbe3002-ws/devel/lib 
+Requires: 
