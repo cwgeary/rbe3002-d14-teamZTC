@@ -1,8 +1,0 @@
-prefix=/home/zach/rbe3002-ws/devel
-
-Name: zachlovett_lab2
-Description: Description of zachlovett_lab2
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/zach/rbe3002-ws/devel/lib 
-Requires: 
