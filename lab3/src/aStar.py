@@ -133,10 +133,10 @@ def hasForcedNeighbor(parent, node, mapInfo, mapData):
 
 
 def sLH(node, goal):
-	return math.sqrt(math.pow(goal[0]-node[0],2) + math.pow(goal[1]-node[1],2))
+	return ecludianDist(node, goal)
 
 def costFunction(node, nextNode):
-	return math.sqrt(math.pow(node[0]-nextNode[0],2) + math.pow(node[1]-nextNode[1],2))
+	return ecludianDist(node, nextNode)
 
 def aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded):
 	
@@ -164,6 +164,7 @@ def aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded):
 
 		#if the current node is the goal, we found it!
 		if current[1] == goal:
+			print "path found"
 			return aStarPath(parent, start, goal)
 
 		# add current to the expanded list.

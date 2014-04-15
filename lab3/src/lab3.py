@@ -108,16 +108,18 @@ if __name__ == '__main__':
     rospy.sleep(rospy.Duration(1, 0))
 
 
+
     print "Starting pathfinder"
 
     #print out our debug map, startting by makeing a list of all of the wall locations
-
-    #pubMap(pub_path, mapInfo, mapData)
+	#pubMap(pub_path, mapInfo, mapData)
+    
     lastGoal = (-1,-1)
     lastStart = (-1,-1)
 
-    #newMap = obstacleExpansion(mapInfo, mapData)
-    #pubMap(pub_expanded, mapInfo, newMap)
+    newMap = obstacleExpansion(1, mapInfo, mapData,pub_waypoints)
+    pubMap(pub_waypoints, mapInfo, newMap)
+
     		
     r = rospy.Rate(10)
     while not rospy.is_shutdown():
@@ -126,7 +128,7 @@ if __name__ == '__main__':
     		lastGoal = goal
     		paths = aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded)
     		publishGridList(paths[0], mapInfo, pub_path)
-    		publishGridList(paths[1], mapInfo, pub_waypoints)
+    		#publishGridList(paths[1], mapInfo, pub_waypoints)
 
         r.sleep()
 

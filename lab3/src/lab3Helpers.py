@@ -30,7 +30,7 @@ def globalToGrid(point, mapInfo):
     return gridPoint
 
 def indexToGrid(index, mapInfo):
-    gridPoint = [index % mapInfo.width , index / mapInfo.width]
+    gridPoint = (index % mapInfo.width , index / mapInfo.width)
     return gridPoint
 
 
@@ -43,17 +43,16 @@ def pubMap(publisher, mapInfo, mapData):
     cells = []
     for i in range(mapInfo.width * mapInfo.height):
         if mapData[i] == 100:
-        	gridPoint = indexToGrid(i, mapInfo)
-        	gp = gridToGlobal(gridPoint, mapInfo)
-  
-        	cells.append(gp)
+            gridPoint = indexToGrid(i, mapInfo)
+            gp = gridToGlobal(gridPoint, mapInfo)
+            cells.append(gp)
 
-        	gridCells = GridCells()
-        	gridCells.header = Header()
-        	gridCells.header.frame_id = "map"
-        	gridCells.cell_width = mapInfo.resolution
-        	gridCells.cell_height = mapInfo.resolution
-        	gridCells.cells = cells
+    gridCells = GridCells()
+    gridCells.header = Header()
+    gridCells.header.frame_id = "map"
+    gridCells.cell_width = mapInfo.resolution
+    gridCells.cell_height = mapInfo.resolution
+    gridCells.cells = cells
     publisher.publish(gridCells)
 
 def publishGridList(list_of_cells, mapInfo, pub):
@@ -70,7 +69,7 @@ def publishGridList(list_of_cells, mapInfo, pub):
 
     pub.publish(gridCells)
 
-def getAllAdj(indexValue, mapInfo, mapData):
+def getAllAdj(depth, indexValue, mapInfo, mapData):
     #cover the majority of the test cases with the first if statement.
     toAdd = []
 
@@ -79,19 +78,64 @@ def getAllAdj(indexValue, mapInfo, mapData):
         toAdd = [indexValue-w-1, indexValue-w, indexValue-w+1,indexValue-1,indexValue+1,indexValue+w-1,indexValue+w,indexValue+1]
     return toAdd
 
-#returns a map that has been expanded by one cell.
-def obstacleExpansion(mapInfo, mapData):
+def ecludianDist(node, nextNode):
+    return math.sqrt(math.pow(node[0]-nextNode[0],2) + math.pow(node[1]-nextNode[1],2))
+
+
+#this assumes that the node is more than radius away from any edge of the map.
+#returns the list of the points that are around the given point.
+def expandPoint(radius, node, mapInfo):
     
-    expanded = []
-    newMap = []
-    newMap = mapData
+    checkList = set()
+
+    for i in range(radius*2+1):
+        for j in range(radius*2+1):
+            newNode = (node[0]-radius + i, node[1] - radius + j)
+            if newNode[0] >= 0 and newNode[1] >= 0 and newNode[0] <= mapInfo.width and newNode[1] <= mapInfo.height:
+                checkList.add(newNode)
+
+    return checkList
+
+#returns a map that has been expanded by one cell.
+def obstacleExpansion(radius, mapInfo, mapData, pub):
+    blocks = 0
+    expanded = set()
+    #dictanary of in keyed on node.
+    newMap = {}
+    newMapData = {}
+    newMapCells = []
+
+
+    print "creating the new map"
+
+    for i in range(len(mapData)):
+        newMap[indexToGrid(i, mapInfo)] = mapData[i]
+
+    print "expanding"
     for node in newMap:
-        if node == 100:
-            expanded = expanded + (getAllAdj(node, mapInfo, mapData))
+        if newMap[node] == 100:
+            expanded.update(expandPoint(radius, node, mapInfo))
+            #publishGridList(expanded, mapInfo, pub)
+
+    print "length of expanded"
+    print len(expanded)
+
     for node in expanded:
         newMap[node] = 100
 
-    return newMap
+    for node in newMap:
+        newMapData[gridToIndex(node, mapInfo)] = newMap[node]
+
+    print "length of the new map and the length of the old map"
+    print len(newMapData)
+    print len(mapData)
+
+    for i in range(len(newMapData)):
+        newMapCells.append(newMapData[i])
+
+
+    print "done, length of the new map is..."
+    return newMapCells
 
 #if the last x direction does not match the new x direction...
 #or if the new y does not match the old y....
