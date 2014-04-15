@@ -98,7 +98,6 @@ def expandPoint(radius, node, mapInfo):
 
 #returns a map that has been expanded by one cell.
 def obstacleExpansion(radius, mapInfo, mapData, pub):
-    blocks = 0
     expanded = set()
     #dictanary of in keyed on node.
     newMap = {}
