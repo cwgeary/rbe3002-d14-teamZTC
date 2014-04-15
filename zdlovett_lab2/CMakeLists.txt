@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(lab3)
+project(zdlovett_lab2)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  common_msgs
   rospy
   std_msgs
 )
@@ -53,7 +52,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate services in the 'srv' folder
 # add_service_files(
 #   FILES
-#   find_path.srv
+#   Service1.srv
+#   Service2.srv
 # )
 
 ## Generate actions in the 'action' folder
@@ -67,7 +67,6 @@ find_package(catkin REQUIRED COMPONENTS
 # generate_messages(
 #   DEPENDENCIES
 #   std_msgs
-#   #geometry_msgs
 # )
 
 ###################################
@@ -81,8 +80,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES lab3
-#  CATKIN_DEPENDS common_msgs rospy std_msgs
+#  LIBRARIES zdlovett_lab2
+#  CATKIN_DEPENDS rospy std_msgs
 #  DEPENDS system_lib
 )
 
@@ -98,19 +97,19 @@ include_directories(
 )
 
 ## Declare a cpp library
-# add_library(lab3
-#   src/${PROJECT_NAME}/lab3.cpp
+# add_library(zdlovett_lab2
+#   src/${PROJECT_NAME}/zdlovett_lab2.cpp
 # )
 
 ## Declare a cpp executable
-# add_executable(lab3_node src/lab3_node.cpp)
+# add_executable(zdlovett_lab2_node src/zdlovett_lab2_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(lab3_node lab3_generate_messages_cpp)
+# add_dependencies(zdlovett_lab2_node zdlovett_lab2_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(lab3_node
+# target_link_libraries(zdlovett_lab2_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -129,7 +128,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS lab3 lab3_node
+# install(TARGETS zdlovett_lab2 zdlovett_lab2_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -154,7 +153,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_lab3.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_zdlovett_lab2.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

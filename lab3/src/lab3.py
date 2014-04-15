@@ -115,6 +115,9 @@ if __name__ == '__main__':
     #pubMap(pub_path, mapInfo, mapData)
     lastGoal = (-1,-1)
     lastStart = (-1,-1)
+
+    #newMap = obstacleExpansion(mapInfo, mapData)
+    #pubMap(pub_expanded, mapInfo, newMap)
     		
     r = rospy.Rate(10)
     while not rospy.is_shutdown():
