@@ -19,9 +19,16 @@ from geometry_msgs.msg import Point
 def readMap(msg):
     global mapInfo #map information such as width and hight, and cell sizes.
     global mapData #the cells of the map, with 100 = impassable and 0 = empty, -1 = unexplored. 
-
+    global newMap #the expanded map data
+    
     mapInfo = msg.info
     mapData = msg.data
+
+    newMap = obstacleExpansion(1, mapInfo, mapData,pub_waypoints)
+    pubMap(pub_waypoints, mapInfo, newMap)
+
+    paths = aStar(start, goal, mapInfo, newMap, pub_frontier, pub_expanded)
+    publishGridList(paths[0], mapInfo, pub_path)
     
     if(len(mapData) != mapInfo.width * mapInfo.height):
         print "map size does not match data length."
@@ -114,6 +121,7 @@ if __name__ == '__main__':
     
     lastGoal = (-1,-1)
     lastStart = (-1,-1)
+<<<<<<< HEAD
 
     newMap = mapResize(0.5, mapInfo, mapData)
     newMapOC = OccupancyGrid()
@@ -122,12 +130,15 @@ if __name__ == '__main__':
     pub_map.publish(newMapOC)
 
     		
+=======
+		
+>>>>>>> d300c7e1a3ea3c15d9c6b1382aba92ca925a9267
     r = rospy.Rate(10)
     while not rospy.is_shutdown():
     	if (goal is not lastGoal) or (start is not lastStart):
     		lastStart = start
     		lastGoal = goal
-    		paths = aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded)
+    		paths = aStar(start, goal, mapInfo, newMap, pub_frontier, pub_expanded)
     		publishGridList(paths[0], mapInfo, pub_path)
     		#publishGridList(paths[1], mapInfo, pub_waypoints)
 
