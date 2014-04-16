@@ -35,10 +35,6 @@ def setStart(msg):
     #set the starting point for the search to the gridpoint defined by the user mouse click.
     start = globalToGrid(point, mapInfo)
 
-    #convert the point to a grid position
-    point.x = round(point.x/mapInfo.resolution) * mapInfo.resolution
-    point.y = round(point.y/mapInfo.resolution) * mapInfo.resolution
-
     #define a new gridcells object 
     gridCells = GridCells()
     
@@ -46,7 +42,7 @@ def setStart(msg):
     gridCells.header = msg.header
     gridCells.cell_width = mapInfo.resolution
     gridCells.cell_height = mapInfo.resolution
-    cells = [point]
+    cells = [gridToGlobal(start, mapInfo)]
     gridCells.cells = cells
 
     pub_start.publish(gridCells)
@@ -80,7 +76,7 @@ def setGoal(msg):
 # This is the program's main function
 if __name__ == '__main__':
     # Change this node name to include your username
-    rospy.init_node('Lab_3_node')
+    rospy.init_node('Lab_4_node')
 
     global mapInfo, mapData
     global frontier, expanded, path, start, goal
@@ -103,6 +99,8 @@ if __name__ == '__main__':
     pub_path = rospy.Publisher('/path', GridCells)
     pub_waypoints = rospy.Publisher('/waypoints', GridCells)
 
+    pub_map = rospy.Publisher('/newMap', OccupancyGrid)
+
 
     # Use this command to make the program wait for some seconds
     rospy.sleep(rospy.Duration(1, 0))
@@ -117,8 +115,11 @@ if __name__ == '__main__':
     lastGoal = (-1,-1)
     lastStart = (-1,-1)
 
-    newMap = obstacleExpansion(1, mapInfo, mapData,pub_waypoints)
-    pubMap(pub_waypoints, mapInfo, newMap)
+    newMap = mapResize(0.5, mapInfo, mapData)
+    newMapOC = OccupancyGrid()
+    newMapOC.info = newMap[0]
+    newMapOC.data = newMap[1]
+    pub_map.publish(newMapOC)
 
     		
     r = rospy.Rate(10)

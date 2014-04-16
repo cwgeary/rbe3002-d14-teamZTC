@@ -1,5 +1,5 @@
 
-import rospy, tf, math
+import rospy, tf, math, numpy, copy
 from nav_msgs.msg import OccupancyGrid #format for reading the map. Data is stored by row.
 from nav_msgs.msg import GridCells #format for publishing to rviz display
 from geometry_msgs.msg import PoseWithCovarianceStamped #format for reading the start and goal points
@@ -125,15 +125,10 @@ def obstacleExpansion(radius, mapInfo, mapData, pub):
     for node in newMap:
         newMapData[gridToIndex(node, mapInfo)] = newMap[node]
 
-    print "length of the new map and the length of the old map"
-    print len(newMapData)
-    print len(mapData)
 
     for i in range(len(newMapData)):
         newMapCells.append(newMapData[i])
 
-
-    print "done, length of the new map is..."
     return newMapCells
 
 #if the last x direction does not match the new x direction...
@@ -188,3 +183,53 @@ def getDirection(eldest, current):
     if(x<xd and y==yd):
         return 8
     return 0
+
+#takes a map object and a new resolution and returns the map at the new resolution.
+def mapResize(newRes, mapInfo, mapData):
+    oldRes = mapInfo.resolution
+    oldw = mapInfo.width
+    oldh = mapInfo.height
+
+    oldMapInfo = copy.deepcopy(mapInfo)
+
+    nMapData = []
+    nMapDataD = {}
+
+    #change the size of the new map. The offsets of the new map are already copied from the old map.
+    mapInfo.resolution = newRes
+    mapInfo.width = int(round( (oldw*(oldRes/newRes)) ))
+    mapInfo.height = int(round( (oldh*(oldRes/newRes)) ))
+
+    #populate the new map at the defined resolution with all cells at -1
+    for x in range(mapInfo.width * mapInfo.height):
+        nMapDataD[x] = 0
+
+    for i in range(len(mapData)):
+        oldGP = indexToGrid(i, oldMapInfo)
+        print oldGP
+        gp = gridToGlobal(oldGP, oldMapInfo)
+
+        nIndex = gridToIndex(globalToGrid(gp, mapInfo), mapInfo)
+
+        nMapDataD[nIndex] = (nMapDataD[nIndex] + mapData[i])
+
+    for i in nMapDataD:
+        value = nMapDataD[i] / ((newRes*newRes) - (oldRes * oldRes))
+        if value > 5:
+            value = 100
+        else:
+            value = 0
+        nMapData.append(numpy.int8(value))
+
+    newMap = (mapInfo, nMapData)
+
+    return newMap
+
+
+
+
+
+
+
+
+
