@@ -24,13 +24,13 @@ def readMap(msg):
     global mapProcessed
 
     print "resizing new map"
-    resizedMap = mapResize(0.4, msg.info, msg.data)
+    resizedMap = mapResize(0.3, msg.info, msg.data)
     
     mapInfo = resizedMap.info
     mapData = resizedMap.data
 
     print "expanding new map."
-    mapData = obstacleExpansion(0, mapInfo, mapData)
+    mapData = obstacleExpansion(1, mapInfo, mapData)
     resizedMap.data = mapData
 
     print "publishing new map"
