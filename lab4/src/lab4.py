@@ -4,6 +4,7 @@
 import rospy, tf, math
 from lab4Helpers import *
 from aStar import *
+from movement import *
 from std_msgs.msg import Header
 from nav_msgs.msg import OccupancyGrid #format for reading the map. Data is stored by row.
 from nav_msgs.msg import GridCells #format for publishing to rviz display
