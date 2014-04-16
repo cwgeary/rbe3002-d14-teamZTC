@@ -8,6 +8,8 @@ Panels:
         - /Map1/Position1
         - /startPoint1
         - /startPoint1/Status1
+        - /newMap1
+        - /newMap1/Status1
       Splitter Ratio: 0.509554
     Tree Height: 940
   - Class: rviz/Selection
@@ -107,6 +109,14 @@ Visualization Manager:
       Name: waypoints
       Topic: /waypoints
       Value: true
+    - Alpha: 0.7
+      Class: rviz/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: newMap
+      Topic: /newMap
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -161,5 +171,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 2760
-  X: 88
-  Y: 533
+  X: 87
+  Y: 525

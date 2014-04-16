@@ -97,7 +97,7 @@ def expandPoint(radius, node, mapInfo):
     return checkList
 
 #returns a map that has been expanded by one cell.
-def obstacleExpansion(radius, mapInfo, mapData, pub):
+def obstacleExpansion(radius, mapInfo, mapData):
     expanded = set()
     #dictanary of in keyed on node.
     newMap = {}
@@ -114,7 +114,6 @@ def obstacleExpansion(radius, mapInfo, mapData, pub):
     for node in newMap:
         if newMap[node] == 100:
             expanded.update(expandPoint(radius, node, mapInfo))
-            #publishGridList(expanded, mapInfo, pub)
 
     print "length of expanded"
     print len(expanded)
@@ -184,7 +183,7 @@ def getDirection(eldest, current):
         return 8
     return 0
 
-#takes a map object and a new resolution and returns the map at the new resolution.
+#takes a map object and a new resolution and returns the Occupancy grid at the new resolution.
 def mapResize(newRes, mapInfo, mapData):
     oldRes = mapInfo.resolution
     oldw = mapInfo.width
@@ -200,16 +199,25 @@ def mapResize(newRes, mapInfo, mapData):
     mapInfo.width = int(round( (oldw*(oldRes/newRes)) ))
     mapInfo.height = int(round( (oldh*(oldRes/newRes)) ))
 
+    print "old map dimensions"
+    print oldMapInfo.width
+    print oldMapInfo.height
+
+    print "new map dimensions w x h"
+    print mapInfo.width
+    print mapInfo.height
+
     #populate the new map at the defined resolution with all cells at -1
+    print "generating the new map"
     for x in range(mapInfo.width * mapInfo.height):
         nMapDataD[x] = 0
 
+    print "summing new blocks"
     for i in range(len(mapData)):
-        oldGP = indexToGrid(i, oldMapInfo)
-        gp = gridToGlobal(oldGP, oldMapInfo)
-
+        gp = gridToGlobal(indexToGrid(i, oldMapInfo), oldMapInfo)
         nIndex = gridToIndex(globalToGrid(gp, mapInfo), mapInfo)
-
+        if nIndex >= (mapInfo.width * mapInfo.height -1):
+            nIndex = nIndex-1
         nMapDataD[nIndex] = (nMapDataD[nIndex] + mapData[i])
 
     for i in nMapDataD:
@@ -220,9 +228,11 @@ def mapResize(newRes, mapInfo, mapData):
             value = 0
         nMapData.append(numpy.int8(value))
 
-    newMap = (mapInfo, nMapData)
+    newMapOC = OccupancyGrid()
+    newMapOC.info = mapInfo
+    newMapOC.data = tuple(nMapData)
 
-    return newMap
+    return newMapOC
 
 
 
