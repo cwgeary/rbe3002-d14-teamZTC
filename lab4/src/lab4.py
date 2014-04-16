@@ -4,7 +4,7 @@
 import rospy, tf, math
 from lab4Helpers import *
 from aStar import *
-from movement import *
+#from movement import *
 from std_msgs.msg import Header
 from nav_msgs.msg import OccupancyGrid #format for reading the map. Data is stored by row.
 from nav_msgs.msg import GridCells #format for publishing to rviz display
@@ -25,8 +25,8 @@ def readMap(msg):
     mapInfo = msg.info
     mapData = msg.data
 
-    newMap = obstacleExpansion(1, mapInfo, mapData,pub_waypoints)
-    pubMap(pub_waypoints, mapInfo, newMap)
+    newMap = obstacleExpansion(0, mapInfo, mapData,pub_waypoints)
+    #pubMap(pub_waypoints, mapInfo, newMap)
 
     paths = aStar(start, goal, mapInfo, newMap, pub_frontier, pub_expanded)
     publishGridList(paths[0], mapInfo, pub_path)
@@ -123,10 +123,10 @@ if __name__ == '__main__':
     lastGoal = (-1,-1)
     lastStart = (-1,-1)
 
-    newMap = mapResize(0.5, mapInfo, mapData)
+    resizedMap = mapResize(0.5, mapInfo, mapData)
     newMapOC = OccupancyGrid()
-    newMapOC.info = newMap[0]
-    newMapOC.data = newMap[1]
+    newMapOC.info = resizedMap[0]
+    newMapOC.data = resizedMap[1]
     pub_map.publish(newMapOC)
 
     r = rospy.Rate(10)

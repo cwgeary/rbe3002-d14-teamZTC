@@ -206,7 +206,6 @@ def mapResize(newRes, mapInfo, mapData):
 
     for i in range(len(mapData)):
         oldGP = indexToGrid(i, oldMapInfo)
-        print oldGP
         gp = gridToGlobal(oldGP, oldMapInfo)
 
         nIndex = gridToIndex(globalToGrid(gp, mapInfo), mapInfo)
