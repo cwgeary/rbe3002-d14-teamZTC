@@ -21,6 +21,7 @@ def readMap(msg):
     global mapInfo #map information such as width and hight, and cell sizes.
     global mapData #the cells of the map, with 100 = impassable and 0 = empty, -1 = unexplored. 
     global pub_map
+    global mapProcessed
 
     print "resizing new map"
     resizedMap = mapResize(0.4, msg.info, msg.data)
@@ -36,10 +37,11 @@ def readMap(msg):
     pub_map.publish(resizedMap)
 
     print "plan a new path."
-    paths = aStar(start, goal, resizedMap.info, resizedMap.data, pub_frontier, pub_expanded)
+    paths = aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded)
     publishGridList(paths[0], mapInfo, pub_path)
 
-    
+    mapProcessed = 1
+
     if(len(mapData) != mapInfo.width * mapInfo.height):
         print "map size does not match data length."
 
@@ -102,6 +104,9 @@ if __name__ == '__main__':
 
     global pub_start, pub_goal, pub_frontier, pub_path, pub_expanded, pub_waypoints, pub_map
 
+    global mapProcessed
+    mapProcessed = 0
+
     goal = (-1,-1)
     start = (-2,-2)
 
@@ -130,16 +135,16 @@ if __name__ == '__main__':
 
     
     lastGoal = (-1,-1)
-    lastStart = (-1,-1)
+    lastStart = (-2,-2)
 
     r = rospy.Rate(10)
     while not rospy.is_shutdown():
-    	if (goal is not lastGoal) or (start is not lastStart):
+    	if ((goal is not lastGoal) or (start is not lastStart)) and (mapProcessed == 1):
     		lastStart = start
     		lastGoal = goal
-    		#paths = aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded)
-    		#publishGridList(paths[0], mapInfo, pub_path)
-    		#publishGridList(paths[1], mapInfo, pub_waypoints)
+    		paths = aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded)
+    		publishGridList(paths[0], mapInfo, pub_path)
+    		publishGridList(paths[1], mapInfo, pub_waypoints)
 
         r.sleep()
 
