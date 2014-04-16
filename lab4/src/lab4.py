@@ -44,6 +44,8 @@ def readMap(msg):
 
     if(len(mapData) != mapInfo.width * mapInfo.height):
         print "map size does not match data length."
+        print len(mapData)
+
 
 def setStart(msg):
     global start, pub_start, mapInfo, mapData

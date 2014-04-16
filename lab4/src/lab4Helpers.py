@@ -93,17 +93,15 @@ def expandPoint(radius, node, mapInfo):
             newNode = (node[0]-radius + i, node[1] - radius + j)
             if newNode[0] >= 0 and newNode[1] >= 0 and newNode[0] <= mapInfo.width and newNode[1] <= mapInfo.height:
                 checkList.add(newNode)
-
     return checkList
 
 #returns a map that has been expanded by one cell.
 def obstacleExpansion(radius, mapInfo, mapData):
     expanded = set()
-    #dictanary of in keyed on node.
+    #dictanary of int keyed on node.
     newMap = {}
     newMapData = {}
     newMapCells = []
-
 
     print "creating the new map"
 
@@ -121,6 +119,7 @@ def obstacleExpansion(radius, mapInfo, mapData):
     for node in expanded:
         newMap[node] = 100
 
+    print "generating new map data"
     for node in newMap:
         newMapData[gridToIndex(node, mapInfo)] = newMap[node]
 
@@ -209,6 +208,7 @@ def mapResize(newRes, mapInfo, mapData):
 
     #populate the new map at the defined resolution with all cells at -1
     print "generating the new map"
+    
     for x in range(mapInfo.width * mapInfo.height):
         nMapDataD[x] = 0
 
@@ -216,8 +216,9 @@ def mapResize(newRes, mapInfo, mapData):
     for i in range(len(mapData)):
         gp = gridToGlobal(indexToGrid(i, oldMapInfo), oldMapInfo)
         nIndex = gridToIndex(globalToGrid(gp, mapInfo), mapInfo)
+        
         if nIndex >= (mapInfo.width * mapInfo.height -1):
-            nIndex = nIndex-1
+            nIndex = mapInfo.width * mapInfo.height-1
         nMapDataD[nIndex] = (nMapDataD[nIndex] + mapData[i])
 
     for i in nMapDataD:

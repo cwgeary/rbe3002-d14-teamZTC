@@ -15,7 +15,7 @@ def getBudds(p, mapInfo, mapData):
 
 	points = []
 	for x in possiblePoints:
-		if mapData[gridToIndex(x, mapInfo)] is 0:
+		if mapData[gridToIndex(x, mapInfo)] <= 1:
 			points.append(x)
 	return points
 
@@ -154,10 +154,8 @@ def aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded):
 		startInRange = True
 
 	while len(frontier) is not 0 and startInRange and goalInRange:
-
 		#ser the current goal to the lowest frontier value, and remove it from the frontier
 		current = heappop(frontier)
-		#print current[1]
 
 		publishGridList([node[1] for node in frontier] , mapInfo, pub_frontier)
 		publishGridList(expanded, mapInfo, pub_expanded)
