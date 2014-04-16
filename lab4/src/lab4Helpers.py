@@ -217,7 +217,7 @@ def mapResize(newRes, mapInfo, mapData):
         gp = gridToGlobal(indexToGrid(i, oldMapInfo), oldMapInfo)
         nIndex = gridToIndex(globalToGrid(gp, mapInfo), mapInfo)
         if nIndex >= (mapInfo.width * mapInfo.height -1):
-            nIndex = nIndex-1
+            nIndex = mapInfo.width * mapInfo.height -1
         nMapDataD[nIndex] = (nMapDataD[nIndex] + mapData[i])
 
     for i in nMapDataD:

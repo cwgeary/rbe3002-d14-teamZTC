@@ -157,7 +157,7 @@ def aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded):
 
 		#ser the current goal to the lowest frontier value, and remove it from the frontier
 		current = heappop(frontier)
-		#print current[1]
+		print current
 
 		publishGridList([node[1] for node in frontier] , mapInfo, pub_frontier)
 		publishGridList(expanded, mapInfo, pub_expanded)
