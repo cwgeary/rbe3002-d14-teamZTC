@@ -122,7 +122,6 @@ if __name__ == '__main__':
     
     lastGoal = (-1,-1)
     lastStart = (-1,-1)
-<<<<<<< HEAD
 
     newMap = mapResize(0.5, mapInfo, mapData)
     newMapOC = OccupancyGrid()
@@ -130,10 +129,6 @@ if __name__ == '__main__':
     newMapOC.data = newMap[1]
     pub_map.publish(newMapOC)
 
-    		
-=======
-		
->>>>>>> d300c7e1a3ea3c15d9c6b1382aba92ca925a9267
     r = rospy.Rate(10)
     while not rospy.is_shutdown():
     	if (goal is not lastGoal) or (start is not lastStart):
