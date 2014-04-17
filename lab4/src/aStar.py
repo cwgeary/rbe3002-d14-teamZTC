@@ -15,8 +15,9 @@ def getBudds(p, mapInfo, mapData):
 
 	points = []
 	for x in possiblePoints:
-		if mapData[gridToIndex(x, mapInfo)] <= 1:
-			points.append(x)
+		if x[0] >= 0 and x[0] <= mapInfo.width-1 and x[1] >= 0 and x[1] <= mapInfo.height-1:
+			if mapData[gridToIndex(x, mapInfo)] <= 1:
+				points.append(x)
 	return points
 
 def expandCurrent(goal, node, mapInfo, mapData):

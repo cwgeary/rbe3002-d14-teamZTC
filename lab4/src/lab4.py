@@ -24,13 +24,13 @@ def readMap(msg):
     global mapProcessed
 
     print "resizing new map"
-    resizedMap = mapResize(0.3, msg.info, msg.data)
+    resizedMap = mapResize(0.21, msg.info, msg.data)
     
     mapInfo = resizedMap.info
     mapData = resizedMap.data
 
     print "expanding new map."
-    mapData = obstacleExpansion(1, mapInfo, mapData)
+    mapData = obstacleExpansion(0, mapInfo, mapData)
     resizedMap.data = mapData
 
     print "publishing new map"
@@ -78,8 +78,6 @@ def setGoal(msg):
     #set the goal point for the search to the gridpoint defined by the user mouse click.
     goal = globalToGrid(point, mapInfo)
 
-    #point.x = round(point.x/mapInfo.resolution) * mapInfo.resolution
-    #point.y = round(point.y/mapInfo.resolution) * mapInfo.resolution
     point = gridToGlobal(goal, mapInfo)
 
     #define a new gridcells object 

@@ -142,10 +142,10 @@ def nextInDirection(parent, node, mapInfo, mapData):
     dy = node[1] - parent[1]
     nextNode = (node[0]+dx, node[1]+dy)
     
-    if nextNode[0] < 0 or nextNode[0] > mapInfo.width:
+    if nextNode[0] <= 0 or nextNode[0] >= mapInfo.width-1:
         return node
     
-    if nextNode[1] < 0 or nextNode[1] > mapInfo.height:
+    if nextNode[1] <= 0 or nextNode[1] >= mapInfo.height-1:
         return node
     
     if mapData[gridToIndex(nextNode, mapInfo)] == 100:
