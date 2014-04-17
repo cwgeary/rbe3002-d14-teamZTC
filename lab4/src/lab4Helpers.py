@@ -103,23 +103,23 @@ def obstacleExpansion(radius, mapInfo, mapData):
     newMapData = {}
     newMapCells = []
 
-    print "creating the new map"
+    #print "creating the new map"
 
     for i in range(len(mapData)):
         newMap[indexToGrid(i, mapInfo)] = mapData[i]
 
-    print "expanding"
+    #print "expanding"
     for node in newMap:
         if newMap[node] == 100:
             expanded.update(expandPoint(radius, node, mapInfo))
 
-    print "length of expanded"
+    #print "length of expanded"
     print len(expanded)
 
     for node in expanded:
         newMap[node] = 100
 
-    print "generating new map data"
+    #print "generating new map data"
     for node in newMap:
         newMapData[gridToIndex(node, mapInfo)] = newMap[node]
 
@@ -198,21 +198,21 @@ def mapResize(newRes, mapInfo, mapData):
     mapInfo.width = int(round( (oldw*(oldRes/newRes)) ))
     mapInfo.height = int(round( (oldh*(oldRes/newRes)) ))
 
-    print "old map dimensions"
-    print oldMapInfo.width
-    print oldMapInfo.height
+    #print "old map dimensions"
+    #print oldMapInfo.width
+    #print oldMapInfo.height
 
-    print "new map dimensions w x h"
-    print mapInfo.width
-    print mapInfo.height
+    #print "new map dimensions w x h"
+    #print mapInfo.width
+    #print mapInfo.height
 
     #populate the new map at the defined resolution with all cells at -1
-    print "generating the new map"
+    #print "generating the new map"
     
     for x in range(mapInfo.width * mapInfo.height):
         nMapDataD[x] = 0
 
-    print "summing new blocks"
+    #print "summing new blocks"
     for i in range(len(mapData)):
         gp = gridToGlobal(indexToGrid(i, oldMapInfo), oldMapInfo)
         nIndex = gridToIndex(globalToGrid(gp, mapInfo), mapInfo)

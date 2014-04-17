@@ -26,17 +26,17 @@ def readMap(msg):
     global pub_map
     global mapProcessed
 
-    print "resizing new map"
+    #print "resizing new map"
     resizedMap = mapResize(0.1, msg.info, msg.data)
     
     mapInfo = resizedMap.info
     mapData = resizedMap.data
 
-    print "expanding new map."
+    #print "expanding new map."
     mapData = obstacleExpansion(2, mapInfo, mapData)
     resizedMap.data = mapData
 
-    print "publishing new map"
+    #print "publishing new map"
     pub_map.publish(resizedMap)
 
     #print "plan a new path."
@@ -45,9 +45,9 @@ def readMap(msg):
 
     mapProcessed = 1
 
-    if(len(mapData) != mapInfo.width * mapInfo.height):
-        print "map size does not match data length."
-        print len(mapData)
+    #if(len(mapData) != mapInfo.width * mapInfo.height):
+    #    print "map size does not match data length."
+    #    print len(mapData)
 
 def setStart(msg):
     global start, pub_start, mapInfo, mapData
@@ -132,22 +132,22 @@ def driveToNextWaypoint(path):
 
 	currentPoint = pose.position
 	#get the global position of the next point in the path.
-	nextPoint = gridToGlobal(path[0], mapInfo)
+	nextPoint = gridToGlobal(path[-1], mapInfo)
 
 	#get the distance beween the current pos and the next waypoint
 	distance = math.sqrt(math.pow(currentPoint.x-nextPoint.x,2) + math.pow(currentPoint.y-nextPoint.y,2))
 
 	#angle between the start and end points in radians. Returns a value between pi and -pi
-	pointAngle = math.atan2(currentPoint.x - nextPoint.x, currentPoint.y - nextPoint.y)
+	pointAngle = math.atan2(nextPoint.y - currentPoint.y,nextPoint.x - currentPoint.x)
 
 	print "angle between points from zero"
 	print pointAngle
-	print "distance to next point"
-	print distance
+	#print "distance to next point"
+	#print distance
 
 	#publish a twist message with the required inputs.
 	rotate(pointAngle)
-	#driveStraight(0.2, distance)
+	driveStraight(0.2, distance)
 
 def driveStraight(speed, distance):
     global pub
@@ -172,29 +172,21 @@ def rotate(angle):
     global pub
     global yaw
 
+    print "target angle"
+    print angle
+
     r = rospy.Rate(50)
 
-    startAngle = yaw
-    targetAngle = yaw + angle
+    speed = -.2
 
-    if targetAngle > math.pi:
-        targetAngle = targetAngle - 2*math.pi
-    elif targetAngle < -math.pi:
-        targetAngle = targetAngle + 2*math.pi
-
-    print targetAngle
-
-    if(angle < 0):
-        speed = -.5   
-    else:
-        speed = 0.5
-
-    while abs(yaw - targetAngle) > 0.025:
+    while abs(yaw - angle) > 0.025:
         twist = Twist()
         twist.linear.x = 0; twist.linear.y = 0; twist.linear.z = 0
         twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = speed;
         pub.publish(twist)
         r.sleep()
+
+    print yaw
 
 # This is the program's main function
 if __name__ == '__main__':
@@ -234,10 +226,8 @@ if __name__ == '__main__':
     rospy.sleep(rospy.Duration(5, 0))
 
 
-
     print "Starting pathfinder"
 
-    
     lastGoal = (-1,-1)
     lastStart = (-2,-2)
 
@@ -245,8 +235,6 @@ if __name__ == '__main__':
     while not rospy.is_shutdown():
 
     	if ((goal != lastGoal) or (start != lastStart)) and (mapProcessed == 1):
-    		print start
-    		print lastStart
 
     		lastStart = start
     		lastGoal = goal
