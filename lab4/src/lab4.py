@@ -39,9 +39,9 @@ def readMap(msg):
     print "publishing new map"
     pub_map.publish(resizedMap)
 
-    print "plan a new path."
-    paths = aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded)
-    publishGridList(paths[0], mapInfo, pub_path)
+    #print "plan a new path."
+    #paths = aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded)
+    #publishGridList(paths[0], mapInfo, pub_path)
 
     mapProcessed = 1
 
@@ -140,15 +140,19 @@ def driveToNextWaypoint(path):
 	#angle between the start and end points in radians. Returns a value between pi and -pi
 	pointAngle = math.atan2(currentPoint.x - nextPoint.x, currentPoint.y - nextPoint.y)
 
+	print "angle between points from zero"
+	print pointAngle
+	print "distance to next point"
+	print distance
+
 	#publish a twist message with the required inputs.
 	rotate(pointAngle)
-	driveStraight(0.2, distance)
+	#driveStraight(0.2, distance)
 
 def driveStraight(speed, distance):
     global pub
     global pose
     print 'driving straight'
-    odist = 0
 
     r = rospy.Rate(50)
 
@@ -239,7 +243,11 @@ if __name__ == '__main__':
 
     r = rospy.Rate(10)
     while not rospy.is_shutdown():
-    	if ((goal is not lastGoal) or (start is not lastStart)) and (mapProcessed == 1):
+
+    	if ((goal != lastGoal) or (start != lastStart)) and (mapProcessed == 1):
+    		print start
+    		print lastStart
+
     		lastStart = start
     		lastGoal = goal
     		paths = aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded)
