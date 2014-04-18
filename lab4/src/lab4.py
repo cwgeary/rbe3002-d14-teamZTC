@@ -25,23 +25,35 @@ def readMap(msg):
     global mapData #the cells of the map, with 100 = impassable and 0 = empty, -1 = unexplored. 
     global pub_map
     global mapProcessed
+    global odom_list
+
+
+    #mapData = msg.data
+    #mapInfo = msg.info
+
+    (tran, rot) = odom_list.lookupTransform('map','base_footprint', rospy.Time(0))
+
+    startPoint = Point()
+    startPoint.x = tran[0]
+    startPoint.y = tran[1]
 
     #print "resizing new map"
-    resizedMap = mapResize(0.1, msg.info, msg.data)
+    resizedMap = mapResize(0.2, msg.info, msg.data)
     
     mapInfo = resizedMap.info
     mapData = resizedMap.data
 
     #print "expanding new map."
-    mapData = obstacleExpansion(2, mapInfo, mapData)
+    mapData = obstacleExpansion(1, mapInfo, mapData)
     resizedMap.data = mapData
 
-    #print "publishing new map"
+
+    print "publishing new map"
     pub_map.publish(resizedMap)
 
     #print "plan a new path."
-    #paths = aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded)
-    #publishGridList(paths[0], mapInfo, pub_path)
+    paths = aStar(globalToGrid(startPoint, mapInfo), goal, mapInfo, mapData, pub_frontier, pub_expanded)
+    publishGridList(paths[0], mapInfo, pub_path)
 
     mapProcessed = 1
 
@@ -73,7 +85,7 @@ def setStart(msg):
     #print start
 
 def readOdom(msg):
-    global start, pub_start, mapInfo, mapData, pose, yaw
+    global start, pub_start, mapInfo, mapData, pose, yaw, odom_list
     pose = msg.pose.pose
     point = msg.pose.pose.position
 
@@ -101,13 +113,12 @@ def readOdom(msg):
     #print start
 
 def setGoal(msg):
-    global goal, pub_goal
+    global goal, pub_goal, goalPoint
     point = msg.pose.position
 
     #set the goal point for the search to the gridpoint defined by the user mouse click.
     goal = globalToGrid(point, mapInfo)
-
-    point = gridToGlobal(goal, mapInfo)
+    goalPoint = gridToGlobal(goal, mapInfo)
 
     #define a new gridcells object 
     gridCells = GridCells()
@@ -116,16 +127,26 @@ def setGoal(msg):
     gridCells.header = msg.header
     gridCells.cell_width = mapInfo.resolution
     gridCells.cell_height = mapInfo.resolution
-    cells = [point]
+    cells = [goalPoint]
     gridCells.cells = cells
 
     pub_goal.publish(gridCells)
     print "goal set at"
     print goal
 
+#takes a global point and drives the motors until it reaches the point.
+#build to be called in a loop, and to replace the driveToNextWaypoint function.
+#def driveToPoint(point):
+#	global
+
+
 
 def driveToNextWaypoint(path):
 	global pose
+	global odom_list
+
+	print "driving to the next waypoint. Path length is"
+	print len(path)
 
 	if len(path) == 0:
 		return
@@ -152,13 +173,18 @@ def driveToNextWaypoint(path):
 def driveStraight(speed, distance):
     global pub
     global pose
+    global odom_list
+    
+    (tran, rot) = odom_list.lookupTransform('map','base_footprint', rospy.Time(0))
+
     print 'driving straight'
 
-    r = rospy.Rate(50)
+    r = rospy.Rate(20)
 
-    startx = pose.position.x
-    starty = pose.position.y
+    startx = tran[0]
+    starty = tran[1]
     while (pose.position.x-startx)**2 + (pose.position.y - starty)**2 < distance**2:
+    	print "driving?"
         twist = Twist()
         twist.linear.x = speed; twist.linear.y = 0; twist.linear.z = 0
         twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0;
@@ -175,11 +201,20 @@ def rotate(angle):
     print "target angle"
     print angle
 
-    r = rospy.Rate(50)
+    r = rospy.Rate(20)
 
-    speed = -.2
+    deltaAngle = angle + yaw
+    if deltaAngle > math.pi:
+        deltaAngle = deltaAngle - 2*math.pi
+    elif deltaAngle < -math.pi:
+        deltaAngle = deltaAngle + 2*math.pi
 
-    while abs(yaw - angle) > 0.025:
+    if deltaAngle < 0:
+    	speed = -0.2
+    else:
+    	speed = 0.2
+
+    while abs(yaw - angle) > 0.02:
         twist = Twist()
         twist.linear.x = 0; twist.linear.y = 0; twist.linear.z = 0
         twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = speed;
@@ -194,11 +229,12 @@ if __name__ == '__main__':
     rospy.init_node('Lab_4_node')
 
     global mapInfo, mapData
-    global frontier, expanded, path, start, goal
+    global frontier, expanded, path, start, goal, startPoint, goalPoint
+    global odom_list
 
     global pub_start, pub_goal, pub_frontier, pub_path, pub_expanded, pub_waypoints, pub_map, pub
-
     global mapProcessed
+
     mapProcessed = 0
 
     goal = (-1,-1)
@@ -221,9 +257,12 @@ if __name__ == '__main__':
     pub_map = rospy.Publisher('/newMap', OccupancyGrid)
     pub = rospy.Publisher('cmd_vel_mux/input/teleop', Twist)
 
+    odom_list = tf.TransformListener()
+
+
 
     # Use this command to make the program wait for some seconds
-    rospy.sleep(rospy.Duration(5, 0))
+    rospy.sleep(rospy.Duration(1, 0))
 
 
     print "Starting pathfinder"
@@ -231,17 +270,21 @@ if __name__ == '__main__':
     lastGoal = (-1,-1)
     lastStart = (-2,-2)
 
-    r = rospy.Rate(10)
+    r = rospy.Rate(50)
     while not rospy.is_shutdown():
 
     	if ((goal != lastGoal) or (start != lastStart)) and (mapProcessed == 1):
 
+    		print "repathing"
+
     		lastStart = start
     		lastGoal = goal
+
     		paths = aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded)
     		publishGridList(paths[0], mapInfo, pub_path)
-    		publishGridList(paths[1], mapInfo, pub_waypoints)
+    		#publishGridList(paths[1], mapInfo, pub_waypoints)
 
+    		print "driving to next waypoint"
     		driveToNextWaypoint(paths[0])
 
         r.sleep()
