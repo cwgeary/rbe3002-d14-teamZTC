@@ -26,6 +26,7 @@ def readMap(msg):
     global pub_map
     global mapProcessed
     global odom_list
+    global path
 
 
     #mapData = msg.data
@@ -54,6 +55,9 @@ def readMap(msg):
     #print "plan a new path."
     paths = aStar(globalToGrid(startPoint, mapInfo), goal, mapInfo, mapData, pub_frontier, pub_expanded)
     publishGridList(paths[0], mapInfo, pub_path)
+
+    print "path in readmap"
+    path = paths[0]
 
     mapProcessed = 1
 
@@ -134,101 +138,100 @@ def setGoal(msg):
     print "goal set at"
     print goal
 
-#takes a global point and drives the motors until it reaches the point.
-#build to be called in a loop, and to replace the driveToNextWaypoint function.
-#def driveToPoint(point):
-#	global
 
-
-
-def driveToNextWaypoint(path):
-	global pose
-	global odom_list
-
-	print "driving to the next waypoint. Path length is"
-	print len(path)
-
-	if len(path) == 0:
-		return
-
-	currentPoint = pose.position
-	#get the global position of the next point in the path.
-	nextPoint = gridToGlobal(path[-1], mapInfo)
-
-	#get the distance beween the current pos and the next waypoint
-	distance = math.sqrt(math.pow(currentPoint.x-nextPoint.x,2) + math.pow(currentPoint.y-nextPoint.y,2))
-
-	#angle between the start and end points in radians. Returns a value between pi and -pi
-	pointAngle = math.atan2(nextPoint.y - currentPoint.y,nextPoint.x - currentPoint.x)
-
-	print "angle between points from zero"
-	print pointAngle
-	#print "distance to next point"
-	#print distance
-
-	#publish a twist message with the required inputs.
-	rotate(pointAngle)
-	driveStraight(0.2, distance)
-
-def driveStraight(speed, distance):
-    global pub
-    global pose
-    global odom_list
-    
-    (tran, rot) = odom_list.lookupTransform('map','base_footprint', rospy.Time(0))
-
-    print 'driving straight'
-
-    r = rospy.Rate(20)
-
-    startx = tran[0]
-    starty = tran[1]
-    while (pose.position.x-startx)**2 + (pose.position.y - starty)**2 < distance**2:
-    	print "driving?"
-        twist = Twist()
-        twist.linear.x = speed; twist.linear.y = 0; twist.linear.z = 0
-        twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0;
-        pub.publish(twist)
-        r.sleep()
-    
-#Accepts an angle and makes lthe robot rotate that angle.
-#the angle is passed in rad
-def rotate(angle):
-    print 'turning now...'
-    global pub
-    global yaw
-
-    print "target angle"
-    print angle
-
-    r = rospy.Rate(20)
-
-    deltaAngle = angle + yaw
+def angleGetDiff(deltaAngle):
     if deltaAngle > math.pi:
         deltaAngle = deltaAngle - 2*math.pi
     elif deltaAngle < -math.pi:
         deltaAngle = deltaAngle + 2*math.pi
+    return deltaAngle
 
-    if deltaAngle < 0:
-    	speed = -0.2
-    else:
-    	speed = 0.2
 
-    while abs(yaw - angle) > 0.02:
-        twist = Twist()
-        twist.linear.x = 0; twist.linear.y = 0; twist.linear.z = 0
-        twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = speed;
-        pub.publish(twist)
-        r.sleep()
+#takes a global point and drives the motors until it reaches the point.
+#build to be called in a loop, and to replace the driveToNextWaypoint function.
+def driveToPoint(nextPoint):
+	print "driving to point"
+	global odom_list, pub
+	twist = Twist()
 
-    print yaw
+	ap = 1.75
+	tp = 1
+
+	minAngle = 0.03
+	maxTurnSpeed = .5
+	minTurnSpeed = .025
+	maxSpeed = .5
+	minSpeed = .075
+
+	#get the current pose of the robot from TF
+	(tran, rot) = odom_list.lookupTransform('map','base_footprint', rospy.Time(0))
+	euler = tf.transformations.euler_from_quaternion(rot)
+	currentAngle = euler[2]
+
+	print "current angle" + str(currentAngle)
+    
+    #find the angle of the target vector
+	targetAngle = math.atan2(nextPoint.y - tran[1], nextPoint.x - tran[0])
+	print "targetAngle" + str(targetAngle)
+
+	deltaAngle = targetAngle - currentAngle
+
+    #now calculate the angle between the current robot position and the vector from the current point to the target point
+	turnTest = deltaAngle + 0.2
+	
+	print "deltaAngle" + str(deltaAngle)
+
+	turnSpeed = ap*deltaAngle
+
+	if angleGetDiff(turnTest) < angleGetDiff(currentAngle):
+		turnSpeed = turnSpeed
+
+	if abs(deltaAngle) < minAngle:
+		turnSpeed = 0
+
+	elif abs(turnSpeed) < minSpeed:
+		if turnSpeed < 0:
+			turnSpeed = -minTurnSpeed
+		elif turnSpeed > 0:
+			turnSpeed = minTurnSpeed
+
+	elif turnSpeed > maxTurnSpeed:
+		turnSpeed = maxTurnSpeed
+	elif turnSpeed < -maxSpeed:
+		turnSpeed = -maxTurnSpeed
+
+    #now that we have a turning speed, find the linear distance
+	distance = math.sqrt(math.pow(tran[0]-nextPoint.x,2) + math.pow(tran[1]-nextPoint.y,2))
+
+	driveSpeed = distance * tp
+	if driveSpeed > maxSpeed:
+		driveSpeed = maxSpeed
+	elif driveSpeed < minSpeed:
+		driveSpeed = 0
+
+	print "turn speed"
+	print turnSpeed
+	print "drive speed"
+	print driveSpeed
+
+   	#now that we have our speeds sum them or trim them depending on what the current states are.
+	if abs(deltaAngle) < minAngle:
+		print "driving"
+		twist.linear.x = driveSpeed; twist.linear.y = 0; twist.linear.z = 0
+		twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0;
+	else:
+		print "turning"
+		twist.linear.x = 0; twist.linear.y = 0; twist.linear.z = 0
+		twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = turnSpeed;
+
+	pub.publish(twist)
 
 # This is the program's main function
 if __name__ == '__main__':
     # Change this node name to include your username
     rospy.init_node('Lab_4_node')
 
-    global mapInfo, mapData
+    global mapInfo, mapData, path
     global frontier, expanded, path, start, goal, startPoint, goalPoint
     global odom_list
 
@@ -266,11 +269,11 @@ if __name__ == '__main__':
 
 
     print "Starting pathfinder"
-
+    path = []
     lastGoal = (-1,-1)
     lastStart = (-2,-2)
 
-    r = rospy.Rate(50)
+    r = rospy.Rate(20)
     while not rospy.is_shutdown():
 
     	if ((goal != lastGoal) or (start != lastStart)) and (mapProcessed == 1):
@@ -280,12 +283,20 @@ if __name__ == '__main__':
     		lastStart = start
     		lastGoal = goal
 
-    		paths = aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded)
-    		publishGridList(paths[0], mapInfo, pub_path)
+    		print "call the pathfinder"
+    		#paths = aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded)
+    		
+    		print "pub the path"
+    		#publishGridList(paths[0], mapInfo, pub_path)
     		#publishGridList(paths[1], mapInfo, pub_waypoints)
 
-    		print "driving to next waypoint"
-    		driveToNextWaypoint(paths[0])
+    		#path = paths[0]
+    		#print path
+
+    	#print "driving to next waypoint if len > 0"
+    	#print len(path)
+    	if len(path) > 0:
+    		driveToPoint(gridToGlobal(path[-1], mapInfo))
 
         r.sleep()
 
