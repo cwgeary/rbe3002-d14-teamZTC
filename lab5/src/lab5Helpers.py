@@ -225,6 +225,8 @@ def mapResize(newRes, mapInfo, mapData):
         value = nMapDataD[i] / ((newRes*newRes) - (oldRes * oldRes))
         if value > 5:
             value = 100
+        elif value < 0:
+            value = -1
         else:
             value = 0
         nMapData.append(numpy.int8(value))

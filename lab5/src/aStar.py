@@ -92,7 +92,7 @@ def hasForcedNeighbor(parent, node, mapInfo, mapData):
 	if direction == 2:
 		if mapData[gridToIndex(n8, mapInfo)] == 100 and mapData[gridToIndex(n1,mapInfo)] == 0: 
 			return True
-		if mapData[gridToIndex(n4, mapInfo)] == 100 and mapData[gridToIndex(n3,mapInfo)]== 0: 
+		if mapData[gridToIndex(n4, mapInfo)] == 100 and mapData[gridToIndex(n3,mapInfo)] == 0: 
 			return True
 	elif direction == 6:
 		if mapData[gridToIndex(n8, mapInfo)] == 100 and mapData[gridToIndex(n7,mapInfo)] == 0: 

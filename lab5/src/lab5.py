@@ -59,10 +59,10 @@ def readMap(msg):
 
     #print "plan a new path."
     paths = aStar(globalToGrid(startPoint, mapInfo), goal, mapInfo, mapData, pub_frontier, pub_expanded)
-    publishGridList(paths[0], mapInfo, pub_path)
+    publishGridList(paths[1], mapInfo, pub_path)
 
     print "path in readmap"
-    path = paths[0]
+    path = paths[1]
 
     mapProcessed = 1
 
@@ -121,7 +121,7 @@ def setGoal(msg):
 # This is the program's main function
 if __name__ == '__main__':
     # Change this node name to include your username
-    rospy.init_node('Lab_4_node')
+    rospy.init_node('Lab_5_node')
 
     global mapInfo, mapData, path
     global frontier, expanded, path, start, goal, startPoint, goalPoint
@@ -167,7 +167,7 @@ if __name__ == '__main__':
     while not rospy.is_shutdown():
 
     	if len(path) > 0:
-    		driveToPoint(gridToGlobal(path[-1], mapInfo),odom_list, pub)
+    		driveToPoint(path, mapInfo, odom_list, pub)
 
         r.sleep()
 
