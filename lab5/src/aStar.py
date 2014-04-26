@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 import rospy, tf, math
 from heapq import *
@@ -8,6 +9,32 @@ from geometry_msgs.msg import Point
 from std_msgs.msg import Header
 
 
+def readMap(msg):
+	#mapData = msg.data
+    #mapInfo = msg.info
+
+    (tran, rot) = odom_list.lookupTransform('map','base_footprint', rospy.Time(0))
+
+    startPoint = Point()
+    startPoint.x = tran[0]
+    startPoint.y = tran[1]
+
+    global mapInfo
+    global mapData
+
+    mapInfo = msg.info
+    mapData = msg.data
+
+    #print "plan a new path."
+    paths = aStar(globalToGrid(startPoint, mapInfo), goal)
+
+    print "path in readmap"
+    path = paths[0]
+
+    #if(len(mapData) != mapInfo.width * mapInfo.height):
+    #    print "map size does not match data length."
+    #    print len(mapData)
+
 #given a gridPoint, return a list of points that are reachable.
 def getBudds(p, mapInfo, mapData):
 	#define a set of all the the points that are adjecent to the current point
@@ -16,7 +43,7 @@ def getBudds(p, mapInfo, mapData):
 	points = []
 	for x in possiblePoints:
 		if x[0] >= 0 and x[0] <= mapInfo.width-1 and x[1] >= 0 and x[1] <= mapInfo.height-1:
-			if mapData[gridToIndex(x, mapInfo)] <= 1: #THIS SHOULD CHANGE BASED ON THE THRESHOLD FOR SAFE DRIVING
+			if mapData[gridToIndex(x, mapInfo)] <= 1:
 				points.append(x)
 	return points
 
@@ -139,7 +166,7 @@ def sLH(node, goal):
 def costFunction(node, nextNode):
 	return ecludianDist(node, nextNode)
 
-def aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded):
+def aStar(start, goal):
 	
 	parent = {} #dictanary of node_came_from keyed on node
 	expanded = [] #list of node
@@ -212,4 +239,12 @@ def aStarPath(parent, start, goal):
 	waypoints.append(start)
 	return [path, waypoints]
 
+def aStar_server():
+    rospy.init_node('aStar_server')
+    s = rospy.Service('aStar', AStar, handle_aStar_request)
+    print "Awaiting Map"
+    map_sum = rospy.Subscriber('map',OccupancyGrid, readMap, queue_size=1)
+    rospy.spin()
 
+if __name__ == "__main__":
+    aStar_server()
