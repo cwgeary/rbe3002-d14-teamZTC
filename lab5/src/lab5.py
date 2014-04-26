@@ -44,7 +44,7 @@ def readMap(msg):
     startPoint.y = tran[1]
 
     #print "resizing new map"
-    resizedMap = mapResize(0.2, msg.info, msg.data)
+    resizedMap = mapResize(0.1, msg.info, msg.data)
     
     mapInfo = resizedMap.info
     mapData = resizedMap.data

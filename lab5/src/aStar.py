@@ -16,7 +16,7 @@ def getBudds(p, mapInfo, mapData):
 	points = []
 	for x in possiblePoints:
 		if x[0] >= 0 and x[0] <= mapInfo.width-1 and x[1] >= 0 and x[1] <= mapInfo.height-1:
-			if mapData[gridToIndex(x, mapInfo)] <= 1:
+			if mapData[gridToIndex(x, mapInfo)] <= 1: #THIS SHOULD CHANGE BASED ON THE THRESHOLD FOR SAFE DRIVING
 				points.append(x)
 	return points
 

@@ -63,7 +63,7 @@
     </model>
     <physics type='ode'>
       <max_step_size>0.01</max_step_size>
-      <real_time_factor>1</real_time_factor>
+      <real_time_factor>4</real_time_factor>
       <real_time_update_rate>100</real_time_update_rate>
       <gravity>0 0 -9.8</gravity>
     </physics>
@@ -1099,7 +1099,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_2'>
       <pose>1 -1 0.5 0 -0 0</pose>
@@ -1153,7 +1153,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_3'>
       <pose>2 -1 0.5 0 -0 0</pose>
@@ -1207,7 +1207,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_4'>
       <pose>3 -1 0.5 0 -0 0</pose>
@@ -1261,7 +1261,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_5'>
       <pose>3 0 0.5 0 -0 0</pose>
@@ -1315,7 +1315,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_6'>
       <pose>3 1 0.5 0 -0 0</pose>
@@ -1369,7 +1369,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_7'>
       <pose>3 3 0.5 0 -0 0</pose>
@@ -1423,7 +1423,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_8'>
       <pose>4 3 0.5 0 -0 0</pose>
@@ -1477,7 +1477,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_9'>
       <pose>5 3 0.5 0 -0 0</pose>
@@ -1531,7 +1531,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_10'>
       <pose>6 3 0.5 0 -0 0</pose>
@@ -1585,7 +1585,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_11'>
       <pose>7 3 0.5 0 -0 0</pose>
@@ -1639,7 +1639,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_12'>
       <pose>7 2 0.5 0 -0 0</pose>
@@ -1693,7 +1693,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_13'>
       <pose>7 1 0.5 0 -0 0</pose>
@@ -1747,7 +1747,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_14'>
       <pose>7 0 0.5 0 -0 0</pose>
@@ -1801,7 +1801,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_cylinder_1'>
       <pose>5 1 0.5 0 -0 0</pose>
@@ -1857,7 +1857,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_15'>
       <pose>4 -1 0.5 0 -0 0</pose>
@@ -1911,7 +1911,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_16'>
       <pose>5 -1 0.5 0 -0 0</pose>
@@ -1965,7 +1965,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_17'>
       <pose>7 -1 0.5 0 -0 0</pose>
@@ -2019,7 +2019,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_18'>
       <pose>1 3 0.5 0 -0 0</pose>
@@ -2073,7 +2073,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_19'>
       <pose>0 3 0.5 0 -0 0</pose>
@@ -2127,7 +2127,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_20'>
       <pose>-1 3 0.5 0 -0 0</pose>
@@ -2181,7 +2181,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_21'>
       <pose>-1 2 0.5 0 -0 0</pose>
@@ -2235,7 +2235,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_22'>
       <pose>-1 1 0.5 0 -0 0</pose>
@@ -2289,7 +2289,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_23'>
       <pose>-1 0 0.5 0 -0 0</pose>
@@ -2343,7 +2343,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_24'>
       <pose>-1 -1 0.5 0 -0 0</pose>
@@ -2397,7 +2397,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_25'>
       <pose>3 4 0.5 0 -0 0</pose>
@@ -2451,7 +2451,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_26'>
       <pose>1 4 0.5 0 -0 0</pose>
@@ -2505,7 +2505,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_27'>
       <pose>0 4 0.5 0 -0 0</pose>
@@ -2559,7 +2559,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_28'>
       <pose>4 4 0.5 0 -0 0</pose>
@@ -2613,7 +2613,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_29'>
       <pose>-1 5 0.5 0 -0 0</pose>
@@ -2667,7 +2667,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_30'>
       <pose>-2 6 0.5 0 -0 0</pose>
@@ -2721,7 +2721,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_31'>
       <pose>5 5 0.5 0 -0 0</pose>
@@ -2775,7 +2775,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_32'>
       <pose>6 6 0.5 0 -0 0</pose>
@@ -2829,7 +2829,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_33'>
       <pose>-2 7 0.5 0 -0 0</pose>
@@ -2883,7 +2883,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_34'>
       <pose>6 7 0.5 0 -0 0</pose>
@@ -2937,7 +2937,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_35'>
       <pose>6 8 0.5 0 -0 0</pose>
@@ -2991,7 +2991,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_36'>
       <pose>5 9 0.5 0 -0 0</pose>
@@ -3045,7 +3045,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_38'>
       <pose>-1 9 0.5 0 -0 0</pose>
@@ -3099,7 +3099,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_39'>
       <pose>4 9 0.5 0 -0 0</pose>
@@ -3153,7 +3153,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_40'>
       <pose>3 9 0.5 0 -0 0</pose>
@@ -3207,7 +3207,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_41'>
       <pose>2 9 0.5 0 -0 0</pose>
@@ -3261,7 +3261,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_42'>
       <pose>0 9 0.5 0 -0 0</pose>
@@ -3315,7 +3315,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_43'>
       <pose>1 9 0.5 0 -0 0</pose>
@@ -3369,7 +3369,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_44'>
       <pose>7 -2 0.5 0 -0 0</pose>
@@ -3423,7 +3423,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_45'>
       <pose>7 -3 0.5 0 -0 0</pose>
@@ -3477,7 +3477,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_59'>
       <pose>6 -3 0.5 0 -0 0</pose>
@@ -3531,7 +3531,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_60'>
       <pose>6 -4 0.5 0 -0 0</pose>
@@ -3585,7 +3585,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_61'>
       <pose>6 -5 0.5 0 -0 0</pose>
@@ -3639,7 +3639,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_62'>
       <pose>6 -6 0.5 0 -0 0</pose>
@@ -3693,7 +3693,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_63'>
       <pose>6 -7 0.5 0 -0 0</pose>
@@ -3747,7 +3747,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_64'>
       <pose>6 -8 0.5 0 -0 0</pose>
@@ -3801,7 +3801,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_65'>
       <pose>5 -8 0.5 0 -0 0</pose>
@@ -3855,7 +3855,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_66'>
       <pose>4 -8 0.5 0 -0 0</pose>
@@ -3909,7 +3909,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_67'>
       <pose>-1 -2 0.5 0 -0 0</pose>
@@ -3963,7 +3963,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_68'>
       <pose>-1 -3 0.5 0 -0 0</pose>
@@ -4017,7 +4017,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_69'>
       <pose>-1 -4 0.5 0 -0 0</pose>
@@ -4071,7 +4071,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_70'>
       <pose>-1 -5 0.5 0 -0 0</pose>
@@ -4125,7 +4125,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_71'>
       <pose>3 -8 0.5 0 -0 0</pose>
@@ -4179,7 +4179,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_72'>
       <pose>2 -8 0.5 0 -0 0</pose>
@@ -4233,7 +4233,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_73'>
       <pose>-1 -6 0.5 0 -0 0</pose>
@@ -4287,7 +4287,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_74'>
       <pose>1 -8 0.5 0 -0 0</pose>
@@ -4341,7 +4341,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_75'>
       <pose>0 -8 0.5 0 -0 0</pose>
@@ -4395,7 +4395,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_76'>
       <pose>-1 -8 0.5 0 -0 0</pose>
@@ -4449,7 +4449,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_cylinder_2'>
       <pose>4 -3 0.5 0 -0 0</pose>
@@ -4505,7 +4505,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_cylinder_3'>
       <pose>3 -5 0.5 0 -0 0</pose>
@@ -4561,7 +4561,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_cylinder_4'>
       <pose>2 -3 0.5 0 -0 0</pose>
@@ -4617,7 +4617,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_cylinder_5'>
       <pose>1 -5 0.5 0 -0 0</pose>
@@ -4673,7 +4673,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_77'>
       <pose>-2 -8 0.5 0 -0 0</pose>
@@ -4727,7 +4727,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_78'>
       <pose>-3 -8 0.5 0 -0 0</pose>
@@ -4781,7 +4781,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_79'>
       <pose>-4 -8 0.5 0 -0 0</pose>
@@ -4835,7 +4835,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_80'>
       <pose>-5 -8 0.5 0 -0 0</pose>
@@ -4889,7 +4889,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_81'>
       <pose>-6 -8 0.5 0 -0 0</pose>
@@ -4943,7 +4943,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_82'>
       <pose>-7 -8 0.5 0 -0 0</pose>
@@ -4997,7 +4997,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_83'>
       <pose>-8 -8 0.5 0 -0 0</pose>
@@ -5051,7 +5051,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_84'>
       <pose>-8 -7 0.5 0 -0 0</pose>
@@ -5105,7 +5105,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_85'>
       <pose>-8 -6 0.5 0 -0 0</pose>
@@ -5159,7 +5159,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_86'>
       <pose>-8 -5 0.5 0 -0 0</pose>
@@ -5213,7 +5213,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_87'>
       <pose>-8 -4 0.5 0 -0 0</pose>
@@ -5267,7 +5267,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_88'>
       <pose>-8 -3 0.5 0 -0 0</pose>
@@ -5321,7 +5321,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_89'>
       <pose>-8 -2 0.5 0 -0 0</pose>
@@ -5375,7 +5375,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_90'>
       <pose>-8 -1 0.5 0 -0 0</pose>
@@ -5429,7 +5429,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_91'>
       <pose>-8 0 0.5 0 -0 0</pose>
@@ -5483,7 +5483,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_92'>
       <pose>-8 1 0.5 0 -0 0</pose>
@@ -5537,7 +5537,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_93'>
       <pose>-8 2 0.5 0 -0 0</pose>
@@ -5591,7 +5591,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_94'>
       <pose>-8 3 0.5 0 -0 0</pose>
@@ -5645,7 +5645,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_95'>
       <pose>-8 4 0.5 0 -0 0</pose>
@@ -5699,7 +5699,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_96'>
       <pose>-2 9 0.5 0 -0 0</pose>
@@ -5753,7 +5753,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_97'>
       <pose>-3 9 0.5 0 -0 0</pose>
@@ -5807,7 +5807,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_98'>
       <pose>-4 9 0.5 0 -0 0</pose>
@@ -5861,7 +5861,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_99'>
       <pose>-3 5 0.5 0 -0 0</pose>
@@ -5915,7 +5915,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_100'>
       <pose>-3.55322 4 0.5 0 -0 0</pose>
@@ -5969,7 +5969,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_101'>
       <pose>-5 9 0.5 0 -0 0</pose>
@@ -6023,7 +6023,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_102'>
       <pose>-6 9 0.5 0 -0 0</pose>
@@ -6077,7 +6077,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_103'>
       <pose>-4 7 0.5 0 -0 0</pose>
@@ -6131,7 +6131,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_104'>
       <pose>-5 6 0.5 0 -0 0</pose>
@@ -6185,7 +6185,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_105'>
       <pose>-6 5 0.5 0 -0 0</pose>
@@ -6239,7 +6239,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_106'>
       <pose>-7 9 0.5 0 -0 0</pose>
@@ -6293,7 +6293,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_107'>
       <pose>-8 5 0.5 0 -0 0</pose>
@@ -6347,7 +6347,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_108'>
       <pose>-8 6 0.5 0 -0 0</pose>
@@ -6401,7 +6401,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_109'>
       <pose>-8 7 0.5 0 -0 0</pose>
@@ -6455,7 +6455,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_110'>
       <pose>-8 8 0.5 0 -0 0</pose>
@@ -6509,7 +6509,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_box_111'>
       <pose>-8 9 0.5 0 -0 0</pose>
@@ -6563,7 +6563,7 @@
         <kinematic>0</kinematic>
         <gravity>1</gravity>
       </link>
-      <static>0</static>
+      <static>1</static>
     </model>
     <model name='unit_sphere_2'>
       <pose>-6.53459 7 0.5 0 -0 0</pose>
