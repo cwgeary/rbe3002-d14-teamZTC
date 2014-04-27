@@ -37,6 +37,8 @@ def centroid(frontierSet, mapInfo):
 #takes a map and a current location and returns a waypoint that is a weighted balance between 
 #the size of the frontier segment and the distance from the current location.
 def frontierWaypoints(globalPoint, mapInfo, mapData):
+	global pub_exway, pub_debug1, pub_debug2
+
 	# a dict of id numbers keyed on nodes. This is how we will check the id of the neighboring nodes.
 	frontier = {}
 	frontierList = frontierId(mapInfo, mapData)		#a list of nodes 
@@ -67,45 +69,35 @@ def frontierWaypoints(globalPoint, mapInfo, mapData):
 			#This is to handle the case of the next node has been set, but it is different fron
 			#the current node and from the last node. In this case we would like to chance the value of
 			#all of the nodes that use this key to whichever key is the lowest of the two valid keys.
-			elif frontier[n] != idnum and frontier[n] != frontier[bud] and frontier[bud] != -1:
+			elif frontier[n] != frontier[bud] and frontier[bud] != -1:
 				#pick whichever id value is lower, and set all of the conflicting nodes to that value as well.
 				if frontier[n] < frontier[bud]:
 					#get all of the nodes that key for the higher value
-					remapping = [node for node, idval in frontier.items() if idval == frontier[n]]
+					remapping = [node for (node, idval) in frontier.items() if idval == frontier[bud]]
 					for m in remapping:
 						frontier[m] = frontier[n]
 
 				elif frontier[bud] < frontier[n]:
 					#all of the nodes that are keyed to frontier[n]
-					remapping = [node for node, idval in frontier.items() if idval == frontier[bud]]
+					remapping = [node for (node, idval) in frontier.items() if idval == frontier[n]]
 					for m in remapping:
 						frontier[m] = frontier[bud]
+				else: print "problem in the inner checks"
+			else: print str(frontier[bud] != -1 and frontier[n] == frontier[bud]) 
+
 		idnum = idnum + 1
 
 	#at this point each of the nodes should have been assigned an id number that will tell us which grouping it
 	#belongs to. We will now use the length as the "weight" of the grouping, and the centroid to calculate the 
 	#distance and set the waypoint.
 
-	#print "the values of the frontier"
-	f = frontier.values()
-	f.sort()
-	#print f
-
 
 	#process the frontier dict and use it to fill a dict of lists of nodes based on the ids of the nodes.
 	for node in frontier:
-		#print "for node: " + str(node)
-		#print "there is key: " + str(frontier[node])
-
 		if frontier[node] in frontierSets:
 			templist = frontierSets[frontier[node]]
 		else: templist = []
-
 		templist.append(node)
-
-		#print "templist"
-		#print templist
-
 		frontierSets[frontier[node]] = templist
 
 	#now to calculate the weight and centroid of each section of the frontier.
@@ -152,10 +144,10 @@ def readMap(msg):
     frontier = frontierId(mapInfo, mapData)
     frontierPoints = frontierWaypoints(startPoint, mapInfo, mapData)
 
-    print "centroids weights"
-    print [n[1] for n in frontierPoints]
-    print "centroids distances"
-    print [n[2] for n in frontierPoints]
+    #print "centroids weights"
+    #print [n[1] for n in frontierPoints]
+    #print "centroids distances"
+    #print [n[2] for n in frontierPoints]
 
     publishGridList([globalToGrid(n[0],mapInfo) for n in frontierPoints], mapInfo, pub_exway)
 
@@ -166,7 +158,7 @@ if __name__ == '__main__':
     rospy.init_node('Lab5_Exploration_node')
 
     global mapInfo, mapData, frontierPoints, frontier
-    global pub_exway
+    global pub_exway, pub_debug1, pub_debug2
 
     goal = (-1,-1)
     start = (-2,-2)
