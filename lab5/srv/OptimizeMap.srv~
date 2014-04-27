@@ -1,0 +1,5 @@
+int resolution
+tuple(1) mapInfo
+tuple(1) mapData
+---
+tuple(1) newMapCells
