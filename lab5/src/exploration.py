@@ -3,7 +3,6 @@
 #python imports
 import rospy, tf, math
 from lab5Helpers import *
-from aStar import getBudds
 
 #booliean used in frontierId. returns true if at least one of the neighboring cells is open.
 def nearKnown(node, mapInfo, mapData):
@@ -38,6 +37,10 @@ def centroid(frontierSet, mapInfo):
 #the size of the frontier segment and the distance from the current location.
 def frontierWaypoints(globalPoint, mapInfo, mapData):
 	global pub_exway, pub_debug1, pub_debug2
+
+	#tuning constants for the weights of the centroid values.
+	kw = 1
+	kd = -1
 
 	# a dict of id numbers keyed on nodes. This is how we will check the id of the neighboring nodes.
 	frontier = {}
@@ -82,8 +85,6 @@ def frontierWaypoints(globalPoint, mapInfo, mapData):
 					remapping = [node for (node, idval) in frontier.items() if idval == frontier[n]]
 					for m in remapping:
 						frontier[m] = frontier[bud]
-				else: print "problem in the inner checks"
-			else: print str(frontier[bud] != -1 and frontier[n] == frontier[bud]) 
 
 		idnum = idnum + 1
 
@@ -108,13 +109,13 @@ def frontierWaypoints(globalPoint, mapInfo, mapData):
 		weight = len(frontierSet)
 		distance = math.sqrt(math.pow(globalPoint.x-cent.x,2) + math.pow(globalPoint.y-cent.y,2))
 
-		centroids.append( (cent, weight, distance) )
+		centroids.append( (cent, weight*kw + distance*kd) )
 
 	print "centroids is " + str(len(centroids)) + " long."
 
-	#sort the centroid list by weight and distance
+	#return the global position of the best centroid.
 
-	return centroids
+	return 	max(centroids, key = lambda item:item[1])[0]
 
 
 def frontierIsDone(mapInfo, mapData):
@@ -167,6 +168,8 @@ if __name__ == '__main__':
     #Set up the subscriptions to all of the nessaray data
     map_sum = rospy.Subscriber('newMap',OccupancyGrid, readMap, queue_size=1)
     pub_exway = rospy.Publisher('/explorationWaypoints', GridCells)
+    pub_waypoint = rospy.Publisher('/waypoint', Point)
+
 
     #a publisher that sends the goal point that was calculated from the centroids.
 
