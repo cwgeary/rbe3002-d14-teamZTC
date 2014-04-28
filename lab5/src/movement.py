@@ -10,7 +10,7 @@ from lab5Helpers import *
 
 #takes a global point and drives the motors until it reaches the point.
 #build to be called in a loop, and to replace the driveToNextWaypoint function.
-def driveToPoint(path, mapInfo, odom_list, pub):
+def driveToPoint(path, odom_list, pub):
     print "driving to point"
 
     twist = Twist()
@@ -32,18 +32,15 @@ def driveToPoint(path, mapInfo, odom_list, pub):
     currentAngle = euler[2]
 
     #distance to next point
-    nextPoint = gridToGlobal(path[-1], mapInfo)
+    nextPoint = path[-1]
 
     #now that we have a next point, find the linear distance
     distance = math.sqrt(math.pow(tran[0]-nextPoint.x,2) + math.pow(tran[1]-nextPoint.y,2))
    
     if len(path) > 1 and distance < minDistance:
         #distance to next next point
-        nextPoint = gridToGlobal(path[-2], mapInfo)
+        nextPoint = path[-2]
         distance = math.sqrt(math.pow(tran[0]-nextPoint.x,2) + math.pow(tran[1]-nextPoint.y,2))
-
-    print "target point:" + str(globalToGrid(nextPoint, mapInfo))
-
 
     #print "current angle" + str(currentAngle)
     

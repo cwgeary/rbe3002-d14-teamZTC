@@ -2,6 +2,7 @@
 
 import rospy, tf, math
 from heapq import *
+from lab5Helpers import *
 from geometry_msgs.msg import PoseWithCovarianceStamped #format for reading the start and goal points
 from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Point
@@ -16,7 +17,7 @@ def readMap(msg):
 	#mapInfo = msg.info
 	print "Map Received"
 
-	global mapInfo, mapData
+	global mapInfo, mapData, goalPoint, waypoints
 
 	mapInfo = msg.info
 	mapData = msg.data
@@ -24,6 +25,14 @@ def readMap(msg):
 	#if(len(mapData) != mapInfo.width * mapInfo.height):
 	#    print "map size does not match data length."
 	#    print len(mapData)
+
+	(tran, rot) = odom_list.lookupTransform('map','base_footprint', rospy.Time(0))
+	startPoint = Point()
+	startPoint.x = tran[0]
+	startPoint.y = tran[1]
+
+	paths = aStar(globalToGrid(startPoint, mapInfo), globalToGrid(goalPoint ,mapInfo))
+	waypoints = paths[1]
 
 
 
@@ -148,6 +157,7 @@ def costFunction(node, nextNode):
 
 def aStar(start, goal):
 	global mapData, mapInfo
+	global pub_frontier, pub_expanded
 	
 	parent = {} #dictanary of node_came_from keyed on node
 	expanded = [] #list of node
@@ -220,25 +230,23 @@ def aStarPath(parent, start, goal):
 	return [path, waypoints]
 
 def handle_aStar_request(req):
+	global odom_list, waypoints, goalPoint
 
-	(tran, rot) = odom_list.lookupTransform('map','base_footprint', rospy.Time(0))
-	startPoint = Point()
-	startPoint.x = tran[0]
-	startPoint.y = tran[1]
-
-	paths = aStar(globalToGrid(startPoint, mapInfo), req)
-	waypoints = paths[1]
+	goalPoint = Point()
+	goalPoint.x = req.x
+	goalPoint.y = req.y
 
 	xList = []
 	yList = []
 
-	for n in waypoints:
-		p = gridToGlobal(waypoints[n])
-		xList[n] = p[0]
-		yList[n] = p[1]
+	for i in range(len(waypoints)):
+		p = gridToGlobal(waypoints[i], mapInfo)
+		xList.append(p.x)
+		yList.append(p.y)
 	return AStarResponse(xList,yList)
 
 def aStar_server():
+	global odom_list
 	rospy.init_node('aStar_server')
 	s = rospy.Service('aStar', AStar, handle_aStar_request)
 	print "Awaiting Map"
@@ -248,4 +256,10 @@ def aStar_server():
 	rospy.spin()
 
 if __name__ == "__main__":
+	global pub_expanded, pub_frontier
+	
+	pub_frontier = rospy.Publisher('/frontier', GridCells)
+	pub_expanded = rospy.Publisher('/expanded', GridCells)
+
 	aStar_server()
+

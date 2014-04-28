@@ -7,6 +7,7 @@ import rospy, tf, math
 from lab5Helpers import *
 from aStar import *
 from movement import *
+from lab5.srv import *
 
 #ROS imports
 from std_msgs.msg import Header
@@ -33,11 +34,11 @@ def aStar_client(goal):
         waypoints = []
         p = Point()
 
-        for n in resp.xList
-            p.x = resp.xList[n]
-            p.y = resp.yList[n]
-            waypoints[n] = p
-
+        for n in range(len(resp.pathX)):
+            p.x = resp.pathX[n]
+            p.y = resp.pathY[n]
+            waypoints.append(p)
+        print "we got da points!"
         return waypoints
     except rospy.ServiceException, e:
         print "Service call failed: %s"%e
@@ -45,25 +46,36 @@ def aStar_client(goal):
 def getGoal(msg):
     global goal
     goal = msg
+
+
+def timerCallback():
+    global waypoints
+    waypoints = aStar_client(goal)
+
+
 # This is the program's main function
 if __name__ == '__main__':
     rospy.init_node('Lab_5_node')
+    
     global goal
-    goal = (-1, -1)
+    goal = Point()
+    odom_list = tf.TransformListener()
 
     #set up all of the publicaitons. (start, goal, expanded, frontier, path)
-    goal_receive = rospy.Subscriber('waypoint',Point, getGoal, queue_size=1)
+    goal_receive = rospy.Subscriber('waypoint', Point, getGoal, queue_size=1)
     pub = rospy.Publisher('cmd_vel_mux/input/teleop', Twist)
+
+    rospy.Timer(rospy.Duration(0.25), timerCallback())
 
     # Use this command to make the program wait for some seconds
     rospy.sleep(rospy.Duration(1, 0))
 
     r = rospy.Rate(20)
     while not rospy.is_shutdown():
-        waypoints = aStar_client(goal)
-    	if len(path) > 0:
-    		driveToPoint(waypoints[1])
+    	if len(waypoints) > 0:
+    		driveToPoint(waypoints[1], odom_list, pub)
 
         r.sleep()
 
     print "exiting pathfinder"
+
