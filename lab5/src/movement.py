@@ -8,8 +8,8 @@ import math
 import time
 from lab5Helpers import *
 
-#takes a global point and drives the motors until it reaches the point.
-#build to be called in a loop, and to replace the driveToNextWaypoint function.
+#takes a list of global points and drives the motors until it reaches the closest point that is the 
+#furtherst along the path. built to be called in a loop, and to replace the driveToNextWaypoint function.
 def driveToPoint(path, odom_list, pub):
     print "driving to point"
 

@@ -109,13 +109,13 @@ def frontierWaypoints(globalPoint, mapInfo, mapData):
 		weight = len(frontierSet)
 		distance = math.sqrt(math.pow(globalPoint.x-cent.x,2) + math.pow(globalPoint.y-cent.y,2))
 
-		centroids.append( (cent, weight*kw + distance*kd) )
+		centroids.append( (globalToGrid(cent, mapInfo), weight*kw + distance*kd) )
 
 	print "centroids is " + str(len(centroids)) + " long."
 
-	#return the global position of the best centroid.
-
-	return 	max(centroids, key = lambda item:item[1])[0]
+	#return the global position of the best centroid and the rest of the centroids in a list.
+	#sorting function to return the max centroid (max(centroids, key = lambda item:item[1])[0], centroids)
+	return (centroids, gridToGlobal( (max(centroids, key = lambda item:item[1])[0]),mapInfo) )
 
 
 def frontierIsDone(mapInfo, mapData):
@@ -128,7 +128,7 @@ def frontierIsDone(mapInfo, mapData):
 def readMap(msg):
     global mapInfo #map information such as width and hight, and cell sizes.
     global mapData #the cells of the map, with 100 = impassable and 0 = empty, -1 = unexplored. 
-    global pub_exway
+    global pub_exway, pub_xp
     global odom_list
     global startPoint
     global frontier, frontierPoints
@@ -142,6 +142,7 @@ def readMap(msg):
     mapInfo = msg.info
     mapData = msg.data
 
+
     frontier = frontierId(mapInfo, mapData)
     frontierPoints = frontierWaypoints(startPoint, mapInfo, mapData)
 
@@ -150,7 +151,9 @@ def readMap(msg):
     #print "centroids distances"
     #print [n[2] for n in frontierPoints]
 
-    publishGridList([globalToGrid(n[0],mapInfo) for n in frontierPoints], mapInfo, pub_exway)
+    publishGridList([c for (c, w) in frontierPoints[0]], mapInfo, pub_exway)
+    print "waypoint: " + str(frontierPoints[1]) + " is publishing now."
+    pub_waypoint.publish(frontierPoints[1])
 
 
 # This is the program's main function
@@ -159,7 +162,7 @@ if __name__ == '__main__':
     rospy.init_node('Lab5_Exploration_node')
 
     global mapInfo, mapData, frontierPoints, frontier
-    global pub_exway, pub_debug1, pub_debug2
+    global pub_exway, pub_xp
 
     goal = (-1,-1)
     start = (-2,-2)
@@ -168,6 +171,7 @@ if __name__ == '__main__':
     #Set up the subscriptions to all of the nessaray data
     map_sum = rospy.Subscriber('newMap',OccupancyGrid, readMap, queue_size=1)
     pub_exway = rospy.Publisher('/explorationWaypoints', GridCells)
+    pub_xp = rospy.Publisher('/explorationPoint', GridCells)
     pub_waypoint = rospy.Publisher('/waypoint', Point)
 
 

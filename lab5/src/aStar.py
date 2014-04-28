@@ -208,6 +208,8 @@ def aStar(start, goal):
 
 #given a dictanary of the parents, and a goal, return the path to get to the goal.
 def aStarPath(parent, start, goal):
+	global waypoints
+
 	path = []
 	waypoints = []
 	current = goal
@@ -225,8 +227,10 @@ def aStarPath(parent, start, goal):
 				waypoints.append(current) #then we have changed direction!
 
 		del parent[last]
-
 	waypoints.append(start)
+
+	publishGridList(waypoints, mapInfo, pub_path)
+
 	return [path, waypoints]
 
 def handle_aStar_request(req):
@@ -260,6 +264,9 @@ if __name__ == "__main__":
 	
 	pub_frontier = rospy.Publisher('/frontier', GridCells)
 	pub_expanded = rospy.Publisher('/expanded', GridCells)
+	pub_path = rospy.Publisher('/path', GridCells)
+
+
 
 	aStar_server()
 

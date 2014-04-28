@@ -48,8 +48,8 @@ def getGoal(msg):
     goal = msg
 
 
-def timerCallback():
-    global waypoints
+def timerCallback(event):
+    global waypoints, goal
     waypoints = aStar_client(goal)
 
 
@@ -57,15 +57,16 @@ def timerCallback():
 if __name__ == '__main__':
     rospy.init_node('Lab_5_node')
     
-    global goal
+    global goal, waypoints
     goal = Point()
+    waypoints = []
     odom_list = tf.TransformListener()
 
     #set up all of the publicaitons. (start, goal, expanded, frontier, path)
     goal_receive = rospy.Subscriber('waypoint', Point, getGoal, queue_size=1)
     pub = rospy.Publisher('cmd_vel_mux/input/teleop', Twist)
 
-    rospy.Timer(rospy.Duration(0.25), timerCallback())
+    rospy.Timer(rospy.Duration(1), timerCallback)
 
     # Use this command to make the program wait for some seconds
     rospy.sleep(rospy.Duration(1, 0))
@@ -73,7 +74,8 @@ if __name__ == '__main__':
     r = rospy.Rate(20)
     while not rospy.is_shutdown():
     	if len(waypoints) > 0:
-    		driveToPoint(waypoints[1], odom_list, pub)
+            print "waypoints: " + str(waypoints[1])
+            driveToPoint(waypoints, odom_list, pub)
 
         r.sleep()
 
