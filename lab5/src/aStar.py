@@ -2,50 +2,30 @@
 
 import rospy, tf, math
 from heapq import *
-from lab5Helpers import *
 from geometry_msgs.msg import PoseWithCovarianceStamped #format for reading the start and goal points
 from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Point
+from geometry_msgs.msg import Point
+from nav_msgs.msg import OccupancyGrid #format for reading the map. Data is stored by row.
 from std_msgs.msg import Header
+from lab5.srv import *
 
 
 def readMap(msg):
 	#mapData = msg.data
-    #mapInfo = msg.info
+	#mapInfo = msg.info
+	print "Map Received"
 
-    (tran, rot) = odom_list.lookupTransform('map','base_footprint', rospy.Time(0))
+	global mapInfo, mapData
 
-    startPoint = Point()
-    startPoint.x = tran[0]
-    startPoint.y = tran[1]
+	mapInfo = msg.info
+	mapData = msg.data
 
-    global mapInfo
-    global mapData
+	#if(len(mapData) != mapInfo.width * mapInfo.height):
+	#    print "map size does not match data length."
+	#    print len(mapData)
 
-    mapInfo = msg.info
-    mapData = msg.data
 
-    #print "plan a new path."
-    paths = aStar(globalToGrid(startPoint, mapInfo), goal)
-
-    print "path in readmap"
-    path = paths[0]
-
-    #if(len(mapData) != mapInfo.width * mapInfo.height):
-    #    print "map size does not match data length."
-    #    print len(mapData)
-
-#given a gridPoint, return a list of points that are reachable.
-def getBudds(p, mapInfo, mapData):
-	#define a set of all the the points that are adjecent to the current point
-	possiblePoints = [ (p[0]-1,p[1]+1), (p[0],p[1]+1), (p[0]+1,p[1]+1), (p[0]+1,p[1]), (p[0]+1,p[1]-1), (p[0],p[1]-1), (p[0]-1,p[1]-1), (p[0]-1,p[1]) ]
-
-	points = []
-	for x in possiblePoints:
-		if x[0] >= 0 and x[0] <= mapInfo.width-1 and x[1] >= 0 and x[1] <= mapInfo.height-1:
-			if mapData[gridToIndex(x, mapInfo)] <= 1:
-				points.append(x)
-	return points
 
 def expandCurrent(goal, node, mapInfo, mapData):
 	buddies = getBudds(node, mapInfo, mapData)
@@ -167,6 +147,7 @@ def costFunction(node, nextNode):
 	return ecludianDist(node, nextNode)
 
 def aStar(start, goal):
+	global mapData, mapInfo
 	
 	parent = {} #dictanary of node_came_from keyed on node
 	expanded = [] #list of node
@@ -222,7 +203,6 @@ def aStarPath(parent, start, goal):
 	current = goal
 	last = goal
 	while current is not start:
-
 		path.append(current)
 		last = current
 		current = parent[current]
@@ -239,12 +219,33 @@ def aStarPath(parent, start, goal):
 	waypoints.append(start)
 	return [path, waypoints]
 
+def handle_aStar_request(req):
+
+	(tran, rot) = odom_list.lookupTransform('map','base_footprint', rospy.Time(0))
+	startPoint = Point()
+	startPoint.x = tran[0]
+	startPoint.y = tran[1]
+
+	paths = aStar(globalToGrid(startPoint, mapInfo), req)
+	waypoints = paths[1]
+
+	xList = []
+	yList = []
+
+	for n in waypoints:
+		p = gridToGlobal(waypoints[n])
+		xList[n] = p[0]
+		yList[n] = p[1]
+	return AStarResponse(xList,yList)
+
 def aStar_server():
-    rospy.init_node('aStar_server')
-    s = rospy.Service('aStar', AStar, handle_aStar_request)
-    print "Awaiting Map"
-    map_sum = rospy.Subscriber('map',OccupancyGrid, readMap, queue_size=1)
-    rospy.spin()
+	rospy.init_node('aStar_server')
+	s = rospy.Service('aStar', AStar, handle_aStar_request)
+	print "Awaiting Map"
+	map_sum = rospy.Subscriber('/newMap', OccupancyGrid, readMap, queue_size=1)
+	odom_list = tf.TransformListener()
+
+	rospy.spin()
 
 if __name__ == "__main__":
-    aStar_server()
+	aStar_server()

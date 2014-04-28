@@ -7,6 +7,17 @@ from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Point
 from std_msgs.msg import Header
 
+#given a gridPoint, return a list of points that are reachable.
+def getBudds(p, mapInfo, mapData):
+    #define a set of all the the points that are adjecent to the current point
+    possiblePoints = [ (p[0]-1,p[1]+1), (p[0],p[1]+1), (p[0]+1,p[1]+1), (p[0]+1,p[1]), (p[0]+1,p[1]-1), (p[0],p[1]-1), (p[0]-1,p[1]-1), (p[0]-1,p[1]) ]
+
+    points = []
+    for x in possiblePoints:
+        if x[0] >= 0 and x[0] <= mapInfo.width-1 and x[1] >= 0 and x[1] <= mapInfo.height-1:
+            if mapData[gridToIndex(x, mapInfo)] <= 1:
+                points.append(x)
+    return points
 
 #takes a gridPoint and converts it into a global point for display in rviz.
 def gridToGlobal(gridPoint, mapInfo):
@@ -84,50 +95,22 @@ def ecludianDist(node, nextNode):
 
 #this assumes that the node is more than radius away from any edge of the map.
 #returns the list of the points that are around the given point.
-def expandPoint(radius, node, mapInfo):
-    
-    checkList = set()
+#def expandPoint(radius, node, mapInfo):
+#    
+#    checkList = set()
+#
+#    for i in range(radius*2+1):
+#        for j in range(radius*2+1):
+#            newNode = (node[0]-radius + i, node[1] - radius + j)
+#            if newNode[0] >= 0 and newNode[1] >= 0 and newNode[0] <= mapInfo.width and newNode[1] <= mapInfo.height:
+#                checkList.add(newNode)
+#    return checkList
 
-    for i in range(radius*2+1):
-        for j in range(radius*2+1):
-            newNode = (node[0]-radius + i, node[1] - radius + j)
-            if newNode[0] >= 0 and newNode[1] >= 0 and newNode[0] <= mapInfo.width and newNode[1] <= mapInfo.height:
-                checkList.add(newNode)
-    return checkList
-
-#returns a map that has been expanded by one cell.
-def obstacleExpansion(radius, mapInfo, mapData):
-    expanded = set()
-    #dictanary of int keyed on node.
-    newMap = {}
-    newMapData = {}
-    newMapCells = []
-
-    #print "creating the new map"
-
-    for i in range(len(mapData)):
-        newMap[indexToGrid(i, mapInfo)] = mapData[i]
-
-    #print "expanding"
-    for node in newMap:
-        if newMap[node] == 100:
-            expanded.update(expandPoint(radius, node, mapInfo))
-
-    #print "length of expanded"
-    print len(expanded)
-
-    for node in expanded:
-        newMap[node] = 100
-
-    #print "generating new map data"
-    for node in newMap:
-        newMapData[gridToIndex(node, mapInfo)] = newMap[node]
-
-
-    for i in range(len(newMapData)):
-        newMapCells.append(newMapData[i])
-
-    return newMapCells
+#this assumes that the node is more than radius away from any edge of the map.
+#returns the list of the points that are around the given point.
+#The value of each free node (0) adjacent to the current non-zero node is incremented to the value of the non-zero node minus the given radius, 
+#effectively creating a "fuzzy" boundry between free space and obstacles
+#Note that this is NOT Tested
 
 #if the last x direction does not match the new x direction...
 #or if the new y does not match the old y....
@@ -181,67 +164,3 @@ def getDirection(eldest, current):
     if(x<xd and y==yd):
         return 8
     return 0
-
-#takes a map object and a new resolution and returns the Occupancy grid at the new resolution.
-def mapResize(newRes, mapInfo, mapData):
-    oldRes = mapInfo.resolution
-    oldw = mapInfo.width
-    oldh = mapInfo.height
-
-    oldMapInfo = copy.deepcopy(mapInfo)
-
-    nMapData = []
-    nMapDataD = {}
-
-    #change the size of the new map. The offsets of the new map are already copied from the old map.
-    mapInfo.resolution = newRes
-    mapInfo.width = int(round( (oldw*(oldRes/newRes)) ))
-    mapInfo.height = int(round( (oldh*(oldRes/newRes)) ))
-
-    #print "old map dimensions"
-    #print oldMapInfo.width
-    #print oldMapInfo.height
-
-    #print "new map dimensions w x h"
-    #print mapInfo.width
-    #print mapInfo.height
-
-    #populate the new map at the defined resolution with all cells at -1
-    #print "generating the new map"
-    
-    for x in range(mapInfo.width * mapInfo.height):
-        nMapDataD[x] = 0
-
-    #print "summing new blocks"
-    for i in range(len(mapData)):
-        gp = gridToGlobal(indexToGrid(i, oldMapInfo), oldMapInfo)
-        nIndex = gridToIndex(globalToGrid(gp, mapInfo), mapInfo)
-        
-        if nIndex >= (mapInfo.width * mapInfo.height -1):
-            nIndex = mapInfo.width * mapInfo.height-1
-        nMapDataD[nIndex] = (nMapDataD[nIndex] + mapData[i])
-
-    for i in nMapDataD:
-        value = nMapDataD[i] / ((newRes*newRes) - (oldRes * oldRes))
-        if value > 5:
-            value = 100
-        elif value < 0:
-            value = -1
-        else:
-            value = 0
-        nMapData.append(numpy.int8(value))
-
-    newMapOC = OccupancyGrid()
-    newMapOC.info = mapInfo
-    newMapOC.data = tuple(nMapData)
-
-    return newMapOC
-
-
-
-
-
-
-
-
-
