@@ -164,3 +164,27 @@ def getDirection(eldest, current):
     if(x<xd and y==yd):
         return 8
     return 0
+
+#rotates a point in space.
+def rotationMatrix(point, theta):
+    point.x = point.x*math.cos(theta) - point.y*math.sin(theta)
+    point.y = point.x*math.sin(theta) + point.y*math.sin(theta)
+    return point
+
+#a function to check for the visibilty of a waypoint
+#takes a the current point, the target point, a map info and a map Data
+def checkVis(current, target, mapInfo, mapData):
+    l = ecludianDist(current, target)
+    theta =  math.atan2(target.y - current.y, target.x - current.x)
+    res = mapInfo.resolution #this is here to save space on the screen.
+
+    for x in range(3):
+        for y in range(l/res):
+            p = Point()
+            p.x = (current-2*res) + x*res
+            p.y = (current - res) + y*res
+            p = rotationMatrix(p, theta)
+
+            if mapData[gridToIndex(globalToGrid(p,mapInfo),mapInfo)] > 60:
+                return 0
+    return 1
