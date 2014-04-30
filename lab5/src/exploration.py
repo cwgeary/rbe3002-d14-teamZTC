@@ -40,7 +40,7 @@ def frontierWaypoints(globalPoint, mapInfo, mapData):
 
 	#tuning constants for the weights of the centroid values.
 	kw = 1
-	kd = -1
+	kd = -5
 
 	# a dict of id numbers keyed on nodes. This is how we will check the id of the neighboring nodes.
 	frontier = {}

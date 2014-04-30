@@ -243,10 +243,13 @@ def handle_aStar_request(req):
 	xList = []
 	yList = []
 
+	print "new waypoints"
 	for i in range(len(waypoints)):
 		p = gridToGlobal(waypoints[i], mapInfo)
 		xList.append(p.x)
 		yList.append(p.y)
+	#print "xlist: " + str(xList)
+	#print "ylist: " + str(yList)
 	return AStarResponse(xList,yList)
 
 def aStar_server():
@@ -256,6 +259,7 @@ def aStar_server():
 	print "Awaiting Map"
 	map_sum = rospy.Subscriber('/newMap', OccupancyGrid, readMap, queue_size=1)
 	odom_list = tf.TransformListener()
+
 
 	rospy.spin()
 

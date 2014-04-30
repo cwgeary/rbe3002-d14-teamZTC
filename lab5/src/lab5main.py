@@ -32,13 +32,13 @@ def aStar_client(goal):
         resp = aStar(goal.x, goal.y)
 
         waypoints = []
-        p = Point()
-
+        
         for n in range(len(resp.pathX)):
+            p = Point()
             p.x = resp.pathX[n]
             p.y = resp.pathY[n]
             waypoints.append(p)
-        print "we got da points!"
+        #print "we got da points! " + str(waypoints)
         return waypoints
     except rospy.ServiceException, e:
         print "Service call failed: %s"%e
@@ -65,6 +65,8 @@ if __name__ == '__main__':
     #set up all of the publicaitons. (start, goal, expanded, frontier, path)
     goal_receive = rospy.Subscriber('waypoint', Point, getGoal, queue_size=1)
     pub = rospy.Publisher('cmd_vel_mux/input/teleop', Twist)
+    pub_drivedebug = rospy.Publisher('/ddebug', GridCells)
+
 
     rospy.Timer(rospy.Duration(1), timerCallback)
 
@@ -74,7 +76,7 @@ if __name__ == '__main__':
     r = rospy.Rate(20)
     while not rospy.is_shutdown():
     	if len(waypoints) > 0:
-            print "waypoints: " + str(waypoints[1])
+            #print "drive waypoints: " + str(waypoints)
             driveToPoint(waypoints, odom_list, pub)
 
         r.sleep()
