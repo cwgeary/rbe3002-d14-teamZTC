@@ -17,7 +17,7 @@ def readMap(msg):
 	#mapInfo = msg.info
 	print "Map Received"
 
-	global mapInfo, mapData, goalPoint, waypoints
+	global mapInfo, mapData, goalPoint, waypoints, startPoint
 
 	mapInfo = msg.info
 	mapData = msg.data
@@ -234,34 +234,48 @@ def aStarPath(parent, start, goal):
 	return [path, waypoints]
 
 def handle_aStar_request(req):
-	global odom_list, waypoints, goalPoint
+	global odom_list, waypoints, goalPoint, startPoint
 
-	goalPoint = Point()
-	goalPoint.x = req.x
-	goalPoint.y = req.y
+	goalPoint = req.goal
 
-	xList = []
-	yList = []
+	recalc_flag = 1
 
-	print "new waypoints"
-	for i in range(len(waypoints)):
-		p = gridToGlobal(waypoints[i], mapInfo)
-		xList.append(p.x)
-		yList.append(p.y)
+	#xList = []
+	#yList = []
+
+	#print "new waypoints"
+	#for i in range(len(waypoints)):
+	#	p = gridToGlobal(waypoints[i], mapInfo)
+	#	xList.append(p.x)
+	#	yList.append(p.y)
 	#print "xlist: " + str(xList)
 	#print "ylist: " + str(yList)
-	return AStarResponse(xList,yList)
+	return AStarResponse(path)
 
 def aStar_server():
-	global odom_list
+	global odom_list, recalc_flag, startPoint
+	recalc_flag = 0
 	rospy.init_node('aStar_server')
 	s = rospy.Service('aStar', AStar, handle_aStar_request)
 	print "Awaiting Map"
 	map_sum = rospy.Subscriber('/newMap', OccupancyGrid, readMap, queue_size=1)
 	odom_list = tf.TransformListener()
 
+	while not rospy.is_shutdown():
+    	if recalc_flag == 1:
+            #print "drive waypoints: " + str(waypoints)
 
-	rospy.spin()
+            (tran, rot) = odom_list.lookupTransform('map','base_footprint', rospy.Time(0))
+			startPoint = Point()
+			startPoint.x = tran[0]
+			startPoint.y = tran[1]
+
+			paths = aStar(globalToGrid(startPoint, mapInfo), globalToGrid(goalPoint ,mapInfo))
+			waypoints = paths[1]
+
+			recalc_flag = 0
+
+        r.sleep()
 
 if __name__ == "__main__":
 	global pub_expanded, pub_frontier
@@ -270,7 +284,4 @@ if __name__ == "__main__":
 	pub_expanded = rospy.Publisher('/expanded', GridCells)
 	pub_path = rospy.Publisher('/path', GridCells)
 
-
-
 	aStar_server()
-

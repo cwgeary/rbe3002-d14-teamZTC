@@ -29,15 +29,15 @@ def aStar_client(goal):
     rospy.wait_for_service('aStar')
     try:
         aStar = rospy.ServiceProxy('aStar', AStar)
-        resp = aStar(goal.x, goal.y)
+        resp = aStar(goal)
 
-        waypoints = []
+        waypoints = resp.path
         
-        for n in range(len(resp.pathX)):
-            p = Point()
-            p.x = resp.pathX[n]
-            p.y = resp.pathY[n]
-            waypoints.append(p)
+        #for n in range(len(resp.pathX)):
+        #    p = Point()
+        #    p.x = resp.pathX[n]
+        #    p.y = resp.pathY[n]
+        #    waypoints.append(p)
         #print "we got da points! " + str(waypoints)
         return waypoints
     except rospy.ServiceException, e:
