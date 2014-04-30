@@ -238,8 +238,6 @@ def handle_aStar_request(req):
 
 	goalPoint = req.goal
 
-	recalc_flag = 1
-
 	#xList = []
 	#yList = []
 
@@ -253,8 +251,8 @@ def handle_aStar_request(req):
 	return AStarResponse(path)
 
 def aStar_server():
-	global odom_list, recalc_flag, startPoint
-	recalc_flag = 0
+	global odom_list, startPoint, waypoints
+	waypoints = []
 	rospy.init_node('aStar_server')
 	s = rospy.Service('aStar', AStar, handle_aStar_request)
 	print "Awaiting Map"
@@ -262,20 +260,15 @@ def aStar_server():
 	odom_list = tf.TransformListener()
 
 	while not rospy.is_shutdown():
-    	if recalc_flag == 1:
-            #print "drive waypoints: " + str(waypoints)
+        #print "drive waypoints: " + str(waypoints)
 
-            (tran, rot) = odom_list.lookupTransform('map','base_footprint', rospy.Time(0))
-			startPoint = Point()
-			startPoint.x = tran[0]
-			startPoint.y = tran[1]
+        (tran, rot) = odom_list.lookupTransform('map','base_footprint', rospy.Time(0))
+		startPoint = Point()
+		startPoint.x = tran[0]
+		startPoint.y = tran[1]
 
-			paths = aStar(globalToGrid(startPoint, mapInfo), globalToGrid(goalPoint ,mapInfo))
-			waypoints = paths[1]
-
-			recalc_flag = 0
-
-        r.sleep()
+		paths = aStar(globalToGrid(startPoint, mapInfo), globalToGrid(goalPoint ,mapInfo))
+		waypoints = paths[1]
 
 if __name__ == "__main__":
 	global pub_expanded, pub_frontier
