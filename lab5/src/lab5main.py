@@ -29,15 +29,15 @@ def aStar_client(goal):
     rospy.wait_for_service('aStar')
     try:
         aStar = rospy.ServiceProxy('aStar', AStar)
-        resp = aStar(goal)
+        resp = aStar(goal.x, goal.y)
 
-        waypoints = resp.path
+        waypoints = []
         
-        #for n in range(len(resp.pathX)):
-        #    p = Point()
-        #    p.x = resp.pathX[n]
-        #    p.y = resp.pathY[n]
-        #    waypoints.append(p)
+        for n in range(len(resp.pathX)):
+            p = Point()
+            p.x = resp.pathX[n]
+            p.y = resp.pathY[n]
+            waypoints.append(p)
         #print "we got da points! " + str(waypoints)
         return waypoints
     except rospy.ServiceException, e:
@@ -75,11 +75,10 @@ if __name__ == '__main__':
 
     r = rospy.Rate(20)
     while not rospy.is_shutdown():
-    	if len(waypoints) > 0:
+        if len(waypoints) > 0:
             #print "drive waypoints: " + str(waypoints)
             driveToPoint(waypoints, odom_list, pub)
 
         r.sleep()
 
     print "exiting pathfinder"
-

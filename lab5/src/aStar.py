@@ -17,7 +17,7 @@ def readMap(msg):
 	#mapInfo = msg.info
 	print "Map Received"
 
-	global mapInfo, mapData, goalPoint, waypoints, startPoint
+	global mapInfo, mapData, goalPoint, waypoints
 
 	mapInfo = msg.info
 	mapData = msg.data
@@ -56,16 +56,16 @@ def diagJump(goal, parent, node, mapInfo, mapData):
 	nodeList = []
 	nextNode = (-1,-1)
 	while 1:
-		
+
 		sideNode = linearJump(goal, (parent[0], parent[1]+(node[1]-parent[1])) , node, mapInfo, mapData)
 		verticalNode = linearJump(goal, (parent[0]+(node[0]-parent[0]), parent[1]) , node, mapInfo, mapData)
-		
+
 		if hasForcedNeighbor(parent, node, mapInfo, mapData) or len(sideNode+verticalNode) > 0 or nextInDirection(parent, node, mapInfo, mapData) == goal:
 			return [node]
 
 		if nextInDirection(parent, node, mapInfo, mapData) == node:
 			return []
-		
+
 		nextNode = nextInDirection(parent, node, mapInfo, mapData)
 		parent = node
 		node = nextNode
@@ -158,7 +158,7 @@ def costFunction(node, nextNode):
 def aStar(start, goal):
 	global mapData, mapInfo
 	global pub_frontier, pub_expanded
-	
+
 	parent = {} #dictanary of node_came_from keyed on node
 	expanded = [] #list of node
 	frontier = [] #list of tuples (node cost) sorted by f(x) cost.
@@ -234,47 +234,42 @@ def aStarPath(parent, start, goal):
 	return [path, waypoints]
 
 def handle_aStar_request(req):
-	global odom_list, waypoints, goalPoint, startPoint
+	global odom_list, waypoints, goalPoint
 
-	goalPoint = req.goal
+	goalPoint = Point()
+	goalPoint.x = req.x
+	goalPoint.y = req.y
 
-	#xList = []
-	#yList = []
+	xList = []
+	yList = []
 
-	#print "new waypoints"
-	#for i in range(len(waypoints)):
-	#	p = gridToGlobal(waypoints[i], mapInfo)
-	#	xList.append(p.x)
-	#	yList.append(p.y)
+	print "new waypoints"
+	for i in range(len(waypoints)):
+		p = gridToGlobal(waypoints[i], mapInfo)
+		xList.append(p.x)
+		yList.append(p.y)
 	#print "xlist: " + str(xList)
 	#print "ylist: " + str(yList)
-	return AStarResponse(path)
+	return AStarResponse(xList,yList)
 
 def aStar_server():
-	global odom_list, startPoint, waypoints
-	waypoints = []
+	global odom_list
 	rospy.init_node('aStar_server')
 	s = rospy.Service('aStar', AStar, handle_aStar_request)
 	print "Awaiting Map"
 	map_sum = rospy.Subscriber('/newMap', OccupancyGrid, readMap, queue_size=1)
 	odom_list = tf.TransformListener()
 
-	while not rospy.is_shutdown():
-        #print "drive waypoints: " + str(waypoints)
 
-        (tran, rot) = odom_list.lookupTransform('map','base_footprint', rospy.Time(0))
-		startPoint = Point()
-		startPoint.x = tran[0]
-		startPoint.y = tran[1]
-
-		paths = aStar(globalToGrid(startPoint, mapInfo), globalToGrid(goalPoint ,mapInfo))
-		waypoints = paths[1]
+	rospy.spin()
 
 if __name__ == "__main__":
 	global pub_expanded, pub_frontier
-	
+
 	pub_frontier = rospy.Publisher('/frontier', GridCells)
 	pub_expanded = rospy.Publisher('/expanded', GridCells)
 	pub_path = rospy.Publisher('/path', GridCells)
+
+
 
 	aStar_server()

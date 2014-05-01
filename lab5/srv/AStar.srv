@@ -1,3 +1,5 @@
-geometry_msgs/Point goal
+float64 x
+float64 y
 ---
-geometry_msgs/Point[] path
+float64[] pathX
+float64[] pathY

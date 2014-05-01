@@ -1,9 +1,3 @@
-float64 x
-float64 y
-float64 z
+geometry_msgs/Point goal
 ---
-float64[] pathX
-float64[] pathY
-float64[] pathZ
-tuple errorTest
-
+geometry_msgs/Point[] path
