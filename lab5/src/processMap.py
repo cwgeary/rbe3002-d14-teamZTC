@@ -13,61 +13,63 @@ def readMap(msg):
     global mapData #the cells of the map, with 100 = impassable and 0 = empty, -1 = unexplored. 
     global pub_map
 
+    print "recived map at: " + str(rospy.get_time())
+
     #print "resizing new map"
-    resizedMap = mapResize(0.1, msg.info, msg.data)
+    resizedMap = mapResize(0.075, msg.info, msg.data)
     
     mapInfo = resizedMap.info
     mapData = resizedMap.data
 
     #print "expanding new map."
-    mapData = obstacleExpansion(1, mapInfo, mapData)
+    mapData = obstacleExpansion(2, mapInfo, mapData)
     resizedMap.data = mapData
 
-    print "publishing new map"
+    print "publishing new map at: " + str(rospy.get_time())
     pub_map.publish(resizedMap)
 
 #this assumes that the node is more than radius away from any edge of the map.
 #returns the list of the points that are around the given point.
-#def expandPoint(radius, node, mapInfo):
-#    
-#    checkList = set()
-#
-#    for i in range(radius*2+1):
-#        for j in range(radius*2+1):
-#            newNode = (node[0]-radius + i, node[1] - radius + j)
-#            if newNode[0] >= 0 and newNode[1] >= 0 and newNode[0] <= mapInfo.width and newNode[1] <= mapInfo.height:
-#                checkList.add(newNode)
-#    return checkList
+def expandPoint(radius, node, mapInfo):
+   
+   checkList = set()
+
+   for i in range(radius*2+1):
+       for j in range(radius*2+1):
+           newNode = (node[0]-radius + i, node[1] - radius + j)
+           if newNode[0] >= 0 and newNode[1] >= 0 and newNode[0] <= mapInfo.width and newNode[1] <= mapInfo.height:
+               checkList.add(newNode)
+   return checkList
 
 #this assumes that the node is more than radius away from any edge of the map.
 #returns the list of the points that are around the given point.
 #The value of each free node (0) adjacent to the current non-zero node is incremented to the value of the non-zero node minus the given radius, 
 #effectively creating a "fuzzy" boundry between free space and obstacles
-#Note that this is NOT Tested
-def expandPoint(radius, node, mapInfo):
+# #Note that this is NOT Tested
+# def expandPoint(radius, node, mapInfo):
     
-    checkList = set()
+#     checkList = set()
 
-    for i in range(radius*2+1):
-        for j in range(radius*2+1):
-            newNode = (node[0]-radius + i, node[1] - radius + j)
-            if newNode[0] >= 0 and newNode[1] >= 0 and newNode[0] <= mapInfo.width and newNode[1] <= mapInfo.height:
-                #temporarily store newNode to a variable (to prevent accidental loss of data if logic flaw exists)
-                n = newNode
-            elif newNode[0] <= 100 and newNode[0] >= radius and newNode[0] <= mapInfo.width and newNode[1] <= mapInfo.height:
-                #...then set the adjacent node to the value of the current node, minus the given radius.
-                newNode[1] = (newNode[0] - radius)
-                #this prevents a node from being accidently converted to a unknown (-1) or an invalid value
-                if newNode[1] < 0:
-                    newNode[1] = 0
-                    #and add the node to checkList
-                checkList.add(newNode)
-        else:
-            checkList.add(n)
-            #but otherwise just add 'n' to the checkList
+#     for i in range(radius*2+1):
+#         for j in range(radius*2+1):
+#             newNode = (node[0]-radius + i, node[1] - radius + j)
+#             if newNode[0] >= 0 and newNode[1] >= 0 and newNode[0] <= mapInfo.width and newNode[1] <= mapInfo.height:
+#                 #temporarily store newNode to a variable (to prevent accidental loss of data if logic flaw exists)
+#                 n = newNode
+#             elif newNode[0] <= 100 and newNode[0] >= radius and newNode[0] <= mapInfo.width and newNode[1] <= mapInfo.height:
+#                 #...then set the adjacent node to the value of the current node, minus the given radius.
+#                 newNode[1] = (newNode[0] - radius)
+#                 #this prevents a node from being accidently converted to a unknown (-1) or an invalid value
+#                 if newNode[1] < 0:
+#                     newNode[1] = 0
+#                     #and add the node to checkList
+#                 checkList.add(newNode)
+#         else:
+#             checkList.add(newNode)
+#             #but otherwise just add 'n' to the checkList
 
-    return checkList
-    #return 'dat checkList, whatever happens
+#     return checkList
+#     #return 'dat checkList, whatever happens
 
 #returns a map that has been expanded by one cell.
 def obstacleExpansion(radius, mapInfo, mapData):
@@ -88,7 +90,7 @@ def obstacleExpansion(radius, mapInfo, mapData):
             expanded.update(expandPoint(radius, node, mapInfo))
 
     #print "length of expanded"
-    print len(expanded)
+    #print len(expanded)
 
     for node in expanded:
         newMap[node] = 100

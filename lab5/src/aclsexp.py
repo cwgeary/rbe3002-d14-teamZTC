@@ -3,6 +3,7 @@
 #python imports
 import rospy, tf, math
 from lab5Helpers import *
+from geometry_msgs.msg import PoseStamped
 
 #booliean used in frontierId. returns true if at least one of the neighboring cells is open.
 def nearKnown(node, mapInfo, mapData):
@@ -49,7 +50,7 @@ def frontierWaypoints(globalPoint, mapInfo, mapData):
 	buds = []
 	centroids = []
 
-	print "frontierList is " + str(len(frontierList)) + " long."
+	#print "frontierList is " + str(len(frontierList)) + " long."
 
 	frontier = {key: -1 for key in frontierList}
 
@@ -109,6 +110,9 @@ def frontierWaypoints(globalPoint, mapInfo, mapData):
 		weight = len(frontierSet)
 		distance = math.sqrt(math.pow(globalPoint.x-cent.x,2) + math.pow(globalPoint.y-cent.y,2))
 
+		if distance < 0.5:
+			weight = - 1000000
+
 		centroids.append( (globalToGrid(cent, mapInfo), weight*kw + distance*kd) )
 
 	print "centroids is " + str(len(centroids)) + " long."
@@ -155,8 +159,19 @@ def readMap(msg):
     #print [n[2] for n in frontierPoints]
 
     publishGridList([c for (c, w) in frontierPoints[0]], mapInfo, pub_exway)
-    print "waypoint: " + str(frontierPoints[1]) + " is publishing at: " + str(rospy.get_time())
-    pub_waypoint.publish(frontierPoints[1])
+    print "publishing at: " + str(rospy.get_time())
+
+    #now we build the waypoint for publishing.
+    target = PoseStamped()
+    target.header.frame_id = "map"
+    target.pose.position = frontierPoints[1]
+    target.pose.orientation.x = rot[0]
+    target.pose.orientation.y = rot[1]
+    target.pose.orientation.z = rot[2]
+    target.pose.orientation.w = rot[3]
+
+
+    pub_waypoint.publish(target)
 
     publishPoint(frontierPoints[1], pub_xp, mapInfo)
 
@@ -173,10 +188,10 @@ if __name__ == '__main__':
     frontier = [goal, start]
 
     #Set up the subscriptions to all of the nessaray data
-    map_sum = rospy.Subscriber('newMap',OccupancyGrid, readMap, queue_size=1)
+    map_sum = rospy.Subscriber('map',OccupancyGrid, readMap, queue_size=1)
     pub_exway = rospy.Publisher('/explorationWaypoints', GridCells)
     pub_xp = rospy.Publisher('/explorationPoint', GridCells)
-    pub_waypoint = rospy.Publisher('/waypoint', Point)
+    pub_waypoint = rospy.Publisher('/move_base_simple/goal', PoseStamped)
 
 
     #a publisher that sends the goal point that was calculated from the centroids.

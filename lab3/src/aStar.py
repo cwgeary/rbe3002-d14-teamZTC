@@ -171,7 +171,7 @@ def aStar(start, goal, mapInfo, mapData, pub_frontier, pub_expanded):
 		expanded.append(current[1])
 
 		#add all of the nodes that are next to the current node to the frontier
-		for x in expandCurrent(goal, current[1], mapInfo, mapData):
+		for x in getBudds( current[1], mapInfo, mapData):
 			#check to see if the buddy is in the expanded list already
 			if x not in expanded:
 				#compute the tenitive cost by adding the cost the the current + the cost to get to x from current

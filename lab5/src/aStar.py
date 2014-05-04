@@ -227,7 +227,7 @@ def aStarPath(parent, start, goal):
 				waypoints.append(current) #then we have changed direction!
 
 		del parent[last]
-	waypoints.append(start)
+	#waypoints.append(start)
 
 	publishGridList(waypoints, mapInfo, pub_path)
 
@@ -253,7 +253,8 @@ def handle_aStar_request(req):
 	return AStarResponse(xList,yList)
 
 def aStar_server():
-	global odom_list
+	global odom_list, waypoints
+	waypoints = []
 	rospy.init_node('aStar_server')
 	s = rospy.Service('aStar', AStar, handle_aStar_request)
 	print "Awaiting Map"

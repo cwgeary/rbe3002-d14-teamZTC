@@ -29,7 +29,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: LaserScan
+    SyncSource: ""
 Visualization Manager:
   Class: ""
   Displays:
@@ -405,12 +405,19 @@ Visualization Manager:
       Name: newMap
       Topic: /newMap
       Value: true
-    - Alpha: 1
+    - Alpha: 0.25
       Class: rviz/GridCells
       Color: 25; 255; 0
       Enabled: true
       Name: unknowns
       Topic: explorationWaypoints
+      Value: true
+    - Alpha: 1
+      Class: rviz/GridCells
+      Color: 255; 85; 0
+      Enabled: true
+      Name: explorationpoint
+      Topic: explorationPoint
       Value: true
   Enabled: true
   Global Options:
@@ -462,5 +469,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 2035
-  X: 810
-  Y: 65
+  X: 804
+  Y: 77

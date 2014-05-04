@@ -117,7 +117,7 @@ if __name__ == '__main__':
     lastGoal = (-1,-1)
     lastStart = (-1,-1)
 
-    newMap = obstacleExpansion(1, mapInfo, mapData,pub_waypoints)
+    newMap = obstacleExpansion(0, mapInfo, mapData,pub_waypoints)
     pubMap(pub_waypoints, mapInfo, newMap)
 
     		

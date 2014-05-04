@@ -80,6 +80,19 @@ def publishGridList(list_of_cells, mapInfo, pub):
 
     pub.publish(gridCells)
 
+#publishes a point
+def publishPoint(point, pub, mapInfo):
+    gridCells = GridCells()
+
+    gridCells = GridCells()
+    gridCells.header = Header()
+    gridCells.header.frame_id = "map"
+    gridCells.cell_width = mapInfo.resolution
+    gridCells.cell_height = mapInfo.resolution
+    gridCells.cells = [point]
+
+    pub.publish(gridCells)
+
 def getAllAdj(depth, indexValue, mapInfo, mapData):
     #cover the majority of the test cases with the first if statement.
     toAdd = []
@@ -91,6 +104,9 @@ def getAllAdj(depth, indexValue, mapInfo, mapData):
 
 def ecludianDist(node, nextNode):
     return math.sqrt(math.pow(node[0]-nextNode[0],2) + math.pow(node[1]-nextNode[1],2))
+
+def ecludianPointDist(point, nextPoint):
+    return math.sqrt(math.pow(point.x-nextPoint.x,2) + math.pow(point.y-nextPoint.y,2))
 
 
 #this assumes that the node is more than radius away from any edge of the map.
@@ -165,25 +181,41 @@ def getDirection(eldest, current):
         return 8
     return 0
 
-#rotates a point in space.
-def rotationMatrix(point, theta):
-    point.x = point.x*math.cos(theta) - point.y*math.sin(theta)
-    point.y = point.x*math.sin(theta) + point.y*math.sin(theta)
+#rotates a point (point) in space about a second point (cp) bt angle (theta).
+def rotationMatrix(point, cp, theta):
+    dx = point.x - cp.x
+    dy = point.y - cp.y
+
+    if theta >= 0:
+        point.x = (dx)*math.cos(theta) - (dy)*math.sin(theta) + cp.x
+        point.y = (dx)*math.sin(theta) + (dy)*math.cos(theta) + cp.y
+    else:
+        point.x = (dx)*math.cos(theta) + (dy)*math.sin(theta) + cp.x
+        point.y = -(dx)*math.sin(theta) + (dy)*math.cos(theta) + cp.y
     return point
 
 #a function to check for the visibilty of a waypoint
 #takes a the current point, the target point, a map info and a map Data
-def checkVis(current, target, mapInfo, mapData):
-    l = ecludianDist(current, target)
+def checkVis(current, target, mapInfo, mapData, pub):
+    l = ecludianPointDist(current, target)
     theta =  math.atan2(target.y - current.y, target.x - current.x)
     res = mapInfo.resolution #this is here to save space on the screen.
 
     for x in range(3):
-        for y in range(l/res):
+        for y in range(int(l/res)):
             p = Point()
-            p.x = (current-2*res) + x*res
-            p.y = (current - res) + y*res
-            p = rotationMatrix(p, theta)
+
+            print "x, y : " +str(x*res) + ", " + str(y*res)
+            print "theta: " + str(theta)
+
+ 
+            p.x = (current.x - 2*res) + x*res
+            p.y = (current.y - res) + y*res
+
+            p = rotationMatrix(p, current, theta)
+
+            publishPoint(p, pub, mapInfo)
+            rospy.sleep(.0075)
 
             if mapData[gridToIndex(globalToGrid(p,mapInfo),mapInfo)] > 60:
                 return 0

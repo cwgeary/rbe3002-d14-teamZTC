@@ -39,6 +39,7 @@ def aStar_client(goal):
             p.y = resp.pathY[n]
             waypoints.append(p)
         #print "we got da points! " + str(waypoints)
+        print "Received waypoints: " + str(waypoints) 
         return waypoints
     except rospy.ServiceException, e:
         print "Service call failed: %s"%e
@@ -52,12 +53,21 @@ def timerCallback(event):
     global waypoints, goal
     waypoints = aStar_client(goal)
 
+def readMap(msg):
+    #mapData = msg.data
+    #mapInfo = msg.info
+    print "Map Received"
+
+    global mapInfo, mapData, goalPoint, waypoints
+
+    mapInfo = msg.info
+    mapData = msg.data
 
 # This is the program's main function
 if __name__ == '__main__':
     rospy.init_node('Lab_5_node')
     
-    global goal, waypoints
+    global goal, waypoints, mapInfo, mapData
     goal = Point()
     waypoints = []
     odom_list = tf.TransformListener()
@@ -66,18 +76,26 @@ if __name__ == '__main__':
     goal_receive = rospy.Subscriber('waypoint', Point, getGoal, queue_size=1)
     pub = rospy.Publisher('cmd_vel_mux/input/teleop', Twist)
     pub_drivedebug = rospy.Publisher('/ddebug', GridCells)
-
+    map_sub = rospy.Subscriber('/newMap', OccupancyGrid, readMap, queue_size=1)
 
     rospy.Timer(rospy.Duration(1), timerCallback)
 
     # Use this command to make the program wait for some seconds
-    rospy.sleep(rospy.Duration(1, 0))
+    rospy.sleep(rospy.Duration(6, 0))
 
-    r = rospy.Rate(20)
+    starTime = 0
+
+    speed = (0,0)
+
+    r = rospy.Rate(15)
     while not rospy.is_shutdown():
+        
         if len(waypoints) > 0:
             #print "drive waypoints: " + str(waypoints)
-            driveToPoint(waypoints, odom_list, pub)
+            speed = driveToPoint(speed, waypoints, odom_list, pub, pub_drivedebug, mapInfo, mapData)
+            startTime = rospy.get_time()
+        else:
+            robotSpin(pub)
 
         r.sleep()
 
